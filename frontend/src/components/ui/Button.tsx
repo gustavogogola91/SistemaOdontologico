@@ -13,12 +13,12 @@ export default function Button({
     onClick,
 }: ButtonProps) {
 
-    const baseClasses = "font-bold text-[24px] cursor-pointer uppercase text-white text-center"
+    const baseClasses = "bg-blue font-bold text-[24px] cursor-pointer uppercase text-white text-center"
 
     const variants = {
-        primary: "bg-green",
+        primary: "",
         danger: "",
-        success: "",
+        success: "bg-green",
     };
 
     const sizes = {

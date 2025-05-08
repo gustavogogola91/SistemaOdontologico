@@ -11,7 +11,9 @@ const consultas = () => {
         <div>
             <h1 className="text-3xl font-bold text-blue">AGENDAR CONSULTA</h1>
             <div>
-                <label htmlFor="BuscarFuncionario">Buscar Paciente</label>
+                <label 
+                className="block"
+                htmlFor="BuscarFuncionario">Buscar Paciente</label>
                 <input 
                 id="BuscarFuncionario" 
                 type="text" 
@@ -19,14 +21,16 @@ const consultas = () => {
                 />
             </div>
             <div>
-                <div>
-                    <p>Guilherme Tavares</p>
-                    <p>Convênio</p>
-                    <p>(41) 9918-1828</p>
+                <div
+                className="flex justify-evenly items-center divide-dashed border-2 border-blue p-1 rounded-[8px]"
+                >
+                    <p className="border-r  border-solid">Guilherme Tavares</p>
+                    <p className="border-r border-solid">Convênio</p>
+                    <p className="border-r border-solid">(41) 9918-1828</p>
                     <Button
                     onClick={handlePostConsulta}
-                    size="small"
                     variant="success"
+                    size="small"
                     >agendar</Button>
                 </div>
             </div>
