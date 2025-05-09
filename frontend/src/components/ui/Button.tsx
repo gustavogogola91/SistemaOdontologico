@@ -13,7 +13,7 @@ export default function Button({
     onClick,
 }: ButtonProps) {
 
-    const baseClasses = "bg-blue font-bold text-[24px] cursor-pointer uppercase text-white text-center"
+    const baseClasses = "bg-blue rounded-[8px] font-bold text-[24px] cursor-pointer uppercase text-white text-center"
 
     const variants = {
         primary: "",

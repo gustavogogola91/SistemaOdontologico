@@ -30,10 +30,16 @@ namespace Backend.Controller
     [HttpPost]
     public async Task<ActionResult> AddConsulta([FromBody] Consulta consulta)
     {
+        var verify = await _database.tb_consulta.FindAsync(consulta.Id);
+        
         if (consulta == null)
         {
             return BadRequest("Consulta inválida!");
+        } else if(verify != null) {
+            return BadRequest("Já existe uma consulta com esse id!");
         }
+
+
 
         _database.tb_consulta.Add(consulta);
         await _database.SaveChangesAsync();
