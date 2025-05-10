@@ -1,5 +1,10 @@
 using Microsoft.EntityFrameworkCore;
-using SistemaOdontologico.Data; // Adicione este using para o DbContext
+using SistemaOdontologico.Data; 
+using backend.Backup;
+using backend.FileEncryptor;
+using backend.Restore;
+using Quartz;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +24,27 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddScoped<IFileEncryptorService, FileEncryptorService>();
+builder.Services.AddScoped<IBackupService, BackupService>();
+builder.Services.AddScoped<IRestoreService, RestoreService>();
+
+builder.Services.AddQuartzHostedService(options =>
+{
+    options.WaitForJobsToComplete = true;
+});
+
+builder.Services.AddQuartz(q =>
+{
+    var jobKey = new JobKey("BackupJob");
+
+    q.AddJob<BackupJob>(opts => opts.WithIdentity(jobKey));
+
+    q.AddTrigger(opts => opts
+            .ForJob(jobKey)
+            .WithIdentity("BackupJob-trigger")
+            .WithCronSchedule("0 0 2 * * ?")
+        );
+});
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
