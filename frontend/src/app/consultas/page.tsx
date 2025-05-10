@@ -1,9 +1,11 @@
 'use client'
 import Button from "@/components/ui/Button";
 import { handlePostConsulta } from "./actions";
+import { useRouter } from 'next/navigation';
 import { useState } from "react";
 
 const consultas = () => {
+    const router = useRouter();
     const [consulta, setConsulta] = useState({
         Paciente: "",
         Dentista: "",
@@ -24,6 +26,12 @@ const consultas = () => {
     return (
         <div className="flex flex-col items-center">
             <h1 className="text-3xl my-28 font-bold text-blue">AGENDAR CONSULTA</h1>
+            <button
+                onClick={() => router.push('/listarConsultas')}
+                className="absolute top-4 right-4 z-10 bg-blue text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition duration-200"
+                >
+                    Consultas agendadas
+                </button>
             <div>
                 <label 
                 className="block"
@@ -63,6 +71,9 @@ const consultas = () => {
                 <h1 className="uppercase text-[24px] font-bold text-[#043873] mt-[20px]">Agendamento</h1>
                 <form className="flex flex-col items-center gap-[16px]" action={() => {
                     handlePostConsulta(consulta)
+                    var modal = document.getElementById("modal");
+                    modal?.classList.add("hidden")
+                    modal?.classList.remove("flex")
                 }}>
                     <label htmlFor="nome">Nome do Paciente</label>
                     <input type="text" name="Paciente" id="paciente" className="border-[1px] border-[#043873] rounded-[10px] p-[3px] w-[350px]" required onChange={handleChange}/>
