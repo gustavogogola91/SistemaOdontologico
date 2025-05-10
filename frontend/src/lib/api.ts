@@ -1,10 +1,10 @@
-"use server"
+
 
 import axios from "axios";
 
 
 const api = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:5027/api", // Ajuste conforme sua API
+    baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:5143/", // Ajuste conforme sua API
     timeout: 5000, // Tempo máximo de espera
   });
 
