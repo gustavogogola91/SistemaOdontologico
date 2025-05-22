@@ -2,7 +2,7 @@ using backend.Backup;
 using backend.Restore;
 using Microsoft.AspNetCore.Mvc;
 
-namespace backend.Controllers
+namespace backend.Controller
 {
     [ApiController]
     [Route("backup")]
