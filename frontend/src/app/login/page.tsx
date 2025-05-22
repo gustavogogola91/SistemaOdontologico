@@ -1,10 +1,17 @@
-
+import Link from "next/link";
+import { FormLogin } from "./components/FormLogin";
 
 
 const login = () => {
     return(
         <>
-            <h1></h1>
+            <Link href={"consultas"}>
+
+            </Link>
+            <div>
+                <h1>LOGIN</h1>
+                <FormLogin />
+            </div>
         </>
     )
 }

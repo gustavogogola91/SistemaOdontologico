@@ -6,6 +6,9 @@ using backend.Restore;
 using Quartz;
 
 
+//TODO: Implementar JWT
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>
