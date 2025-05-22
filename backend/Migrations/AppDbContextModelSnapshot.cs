@@ -124,6 +124,45 @@ namespace backend.Migrations
 
                     b.ToTable("tb_paciente");
                 });
+
+            modelBuilder.Entity("SistemaOdontologico.Models.Procedimento", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("DentistaId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Observacoes")
+                        .HasColumnType("text");
+
+                    b.Property<double>("Valor")
+                        .HasColumnType("double precision");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DentistaId");
+
+                    b.ToTable("tb_procedimento");
+                });
+
+            modelBuilder.Entity("SistemaOdontologico.Models.Procedimento", b =>
+                {
+                    b.HasOne("SistemaOdontologico.Models.Dentista", "Dentista")
+                        .WithMany()
+                        .HasForeignKey("DentistaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Dentista");
+                });
 #pragma warning restore 612, 618
         }
     }
