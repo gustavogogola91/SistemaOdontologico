@@ -4,7 +4,7 @@ namespace backend.FileEncryptor
 {
     public class FileEncryptorService : IFileEncryptorService
     {
-        public void DecryptFile(string inputFile, string outputFile, string password)
+        public void EncryptFile(string inputFile, string outputFile, string password)
         {
             using var aes = Aes.Create();
 
@@ -31,7 +31,7 @@ namespace backend.FileEncryptor
             File.Delete(inputFile);
         }
 
-        public void EncryptFile(string inputFile, string outputFile, string password)
+        public void DecryptFile(string inputFile, string outputFile, string password)
         {
             using var fsIn = new FileStream(inputFile, FileMode.Open, FileAccess.Read);
 
