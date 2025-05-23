@@ -22,6 +22,7 @@ namespace backend.Controller
             _jwtService = jwtService;
         }
 
+        [HttpPost]
         public async Task<IActionResult> Login(Login login)
         {
             try
