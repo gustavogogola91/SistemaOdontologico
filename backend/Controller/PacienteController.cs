@@ -71,11 +71,13 @@ namespace SistemaOdontologico.Controllers
 
             // Atualiza apenas os campos necessários
             pacienteExistente.Nome = paciente.Nome;
-            pacienteExistente.DataNascimento = paciente.DataNascimento;
+            pacienteExistente.DataNascimento = pacienteExistente.DataNascimento;
             pacienteExistente.Telefone = paciente.Telefone;
             pacienteExistente.Email = paciente.Email;
             pacienteExistente.CPF = paciente.CPF;
             pacienteExistente.Endereco = paciente.Endereco;
+            pacienteExistente.Convenio = paciente.Convenio;
+            pacienteExistente.Senha = paciente.Senha;
 
             await _database.SaveChangesAsync();
             return Ok("Informações do paciente atualizadas!");

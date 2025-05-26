@@ -1,5 +1,4 @@
 "use client";
-import api from "@/lib/api";
 import React, { use, useEffect, useState } from "react";
 
 var apiUrl = "http://localhost:5143/paciente";
@@ -52,9 +51,7 @@ function ListaPacientes() {
                 <p className="w-[300px] mx-1.5 border-r border-solid">{paciente.nome}</p>
                 <p className="w-[300px] border-r border-solid">{paciente.convenio || "Convênio"}</p>
                 <p className="w-[200px] border-r border-solid">{paciente.telefone || "(41) 9918-1828"}</p>
-                <button className="bg-blue rounded-[8px] font-bold text-[24px] cursor-pointer uppercase text-white text-center w-[150px] h-[35px]">
-                    Editar
-                </button>
+                <EditarPacientes id={paciente.id}/>
             </div>
         ))
     )}
@@ -149,6 +146,102 @@ function AdicionarPacientes() {
                                 onClick={() => setShowModal(false)}>Cancelar</button>
                             <button 
                                 type="submit" 
+                                className="bg-blue text-white px-4 py-2 rounded cursor-pointer"
+                            >Salvar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        )}
+        </>
+    );
+}
+
+function EditarPacientes({ id }) {
+    const [showModal, setShowModal] = useState(false);
+    const [paciente, setPaciente] = useState({
+        nome: "",
+        senha: "",
+        convenio: "",
+        cpf: "",
+        email: "",
+        telefone: "",
+        endereco: ""
+    });
+
+    const putPacientes = (paciente: { nome: string; senha: string, convenio: string, cpf: string, email: string, telefone: string, endereco: string }) => {
+        try {
+            fetch(`${apiUrl}/${id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(paciente),
+            }).then(() => {
+                setShowModal(false);
+                setPaciente({ nome: "", senha: "", convenio: "", cpf: "", email: "", telefone: "", endereco: "" });
+            });
+            console.log("Paciente atualizado com sucesso:", paciente);
+        }
+        catch (error) {
+            console.error("Erro ao atualizar paciente:", error);
+        }
+    }
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setPaciente({...paciente, [name]: value });
+    };
+    
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        putPacientes(paciente);
+    };
+
+    return (
+        <>
+        <button className="bg-blue rounded-[8px] font-bold text-[24px] cursor-pointer uppercase text-white text-center w-[150px] h-[35px]"
+        title="Adicionar novo paciente"
+        onClick={() => setShowModal(true)}
+        >Editar</button>
+        { showModal && (
+            <div className="fixed inset-0 flex items-center justify-center z-50" style={{ background: "rgba(0,0,0,0.3)" }}>
+                <div className="bg-white p-8 rounded-lg flex flex-col gap-4 min-w-[350px]">
+                    <h2 className="text-xl font-bold text-blue mb-2">Editar Paciente</h2>
+                    <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+                        <input name="nome" placeholder="Nome" 
+                            className="border border-blue rounded p-2" required 
+                            value={paciente.nome} onChange={handleChange} 
+                        />
+                        <input name="senha" placeholder="Senha" 
+                            className="border border-blue rounded p-2" required
+                            value={paciente.senha} onChange={handleChange} 
+                        />
+                        <input name="convenio" placeholder="Convênio" 
+                            className="border border-blue rounded p-2" required
+                            value={paciente.convenio} onChange={handleChange} 
+                        />
+                        <input name="cpf" placeholder="CPF" 
+                            className="border border-blue rounded p-2" required
+                            value={paciente.cpf} onChange={handleChange} 
+                        />
+                        <input name="email" placeholder="Email" 
+                            className="border border-blue rounded p-2" required
+                            value={paciente.email} onChange={handleChange} 
+                        />
+                        <input name="telefone" placeholder="Telefone" 
+                            className="border border-blue rounded p-2" required
+                            value={paciente.telefone} onChange={handleChange} 
+                        />
+                        <input name="endereco" placeholder="Endereco" 
+                            className="border border-blue rounded p-2" required
+                            value={paciente.endereco} onChange={handleChange} 
+                        />
+                        <div className="flex gap-4 mt-2">
+                            <button 
+                                type="button" 
+                                className="bg-red-500 text-white px-4 py-2 rounded cursor-pointer"
+                                onClick={() => setShowModal(false)}>Cancelar</button>
+                            <button 
+                                type="submit"
                                 className="bg-blue text-white px-4 py-2 rounded cursor-pointer"
                             >Salvar</button>
                         </div>
