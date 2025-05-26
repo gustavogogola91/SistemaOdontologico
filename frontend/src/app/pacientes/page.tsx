@@ -52,6 +52,7 @@ function ListaPacientes() {
                 <p className="w-[300px] border-r border-solid">{paciente.convenio || "Convênio"}</p>
                 <p className="w-[200px] border-r border-solid">{paciente.telefone || "(41) 9918-1828"}</p>
                 <EditarPacientes id={paciente.id}/>
+                <DeletarPacientes id={paciente.id}/>
             </div>
         ))
     )}
@@ -251,4 +252,28 @@ function EditarPacientes({ id }) {
         )}
         </>
     );
+}
+
+function DeletarPacientes({ id }) {
+    const idPaciente = id;
+    const [pacientes, setPacientes] = useState([]);
+    const deletarPaciente = (id: string) => {
+        fetch(`${apiUrl}/${id}`, {
+            method: 'DELETE',
+        })
+        .then(() => {
+            setPacientes(pacientes.filter((p: any) => p.id !== id));
+        })
+        .catch((error) => console.error('Erro ao deletar paciente:', error));
+    };
+    
+    return (
+        <>
+        <button
+            className="ml-2 bg-transparent hover:bg-red-100 rounded p-1"
+            title="Deletar paciente"
+            onClick={() => deletarPaciente(idPaciente)}
+        ><img src="/trashIcon.png" alt="Deletar" className="w-6 h-6" /></button>
+</>
+    )
 }
