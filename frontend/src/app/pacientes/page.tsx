@@ -1,5 +1,7 @@
 "use client";
-import React, { use, useEffect, useState } from "react";
+
+import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
 
 var apiUrl = "http://localhost:5143/paciente";
 
@@ -65,7 +67,6 @@ function AdicionarPacientes() {
     const [showModal, setShowModal] = useState(false);
     const [novoPaciente, setNovoPaciente] = useState({
         nome: "",
-        senha: "",
         convenio: "",
         cpf: "",
         email: "",
@@ -73,7 +74,7 @@ function AdicionarPacientes() {
         endereco: ""
     });
 
-    const postPacientes = (novoPaciente: { nome: string; senha: string, convenio: string, cpf: string, email: string, telefone: string, endereco: string }) => {
+    const postPacientes = (novoPaciente: { nome: string, convenio: string, cpf: string, email: string, telefone: string, endereco: string }) => {
         try {
             fetch(`${apiUrl}`, {
                 method: "POST",
@@ -81,7 +82,8 @@ function AdicionarPacientes() {
                 body: JSON.stringify({...novoPaciente, dataNascimento: new Date()}),
             }).then(() => {
                 setShowModal(false);
-                setNovoPaciente({ nome: "", senha: "", convenio: "", cpf: "", email: "", telefone: "", endereco: "" });
+                setNovoPaciente({ nome: "", convenio: "", cpf: "", email: "", telefone: "", endereco: "" });
+                // router.reload();
             });
             console.log("Paciente adicionado com sucesso:", novoPaciente);
         }
@@ -116,14 +118,7 @@ function AdicionarPacientes() {
                             className="border border-blue rounded p-2" required 
                             value={novoPaciente.nome} onChange={handleChange} 
                         />
-                        <input name="senha" placeholder="Senha" 
-                            className="border border-blue rounded p-2" required
-                            value={novoPaciente.senha} onChange={handleChange} 
-                        />
-                        <input name="convenio" placeholder="Convênio" 
-                            className="border border-blue rounded p-2" required
-                            value={novoPaciente.convenio} onChange={handleChange} 
-                        />
+                        
                         <input name="cpf" placeholder="CPF" 
                             className="border border-blue rounded p-2" required
                             value={novoPaciente.cpf} onChange={handleChange} 
@@ -135,6 +130,10 @@ function AdicionarPacientes() {
                         <input name="telefone" placeholder="Telefone" 
                             className="border border-blue rounded p-2" required
                             value={novoPaciente.telefone} onChange={handleChange} 
+                        />
+                        <input name="convenio" placeholder="Convênio" 
+                            className="border border-blue rounded p-2" required
+                            value={novoPaciente.convenio} onChange={handleChange} 
                         />
                         <input name="endereco" placeholder="Endereco" 
                             className="border border-blue rounded p-2" required
@@ -158,11 +157,10 @@ function AdicionarPacientes() {
     );
 }
 
-function EditarPacientes({ id }) {
+function EditarPacientes({ id }: {id:number}) {
     const [showModal, setShowModal] = useState(false);
     const [paciente, setPaciente] = useState({
         nome: "",
-        senha: "",
         convenio: "",
         cpf: "",
         email: "",
@@ -170,7 +168,7 @@ function EditarPacientes({ id }) {
         endereco: ""
     });
 
-    const putPacientes = (paciente: { nome: string; senha: string, convenio: string, cpf: string, email: string, telefone: string, endereco: string }) => {
+    const putPacientes = (paciente: { nome: string, convenio: string, cpf: string, email: string, telefone: string, endereco: string }) => {
         try {
             fetch(`${apiUrl}/${id}`, {
                 method: "PUT",
@@ -178,9 +176,10 @@ function EditarPacientes({ id }) {
                 body: JSON.stringify(paciente),
             }).then(() => {
                 setShowModal(false);
-                setPaciente({ nome: "", senha: "", convenio: "", cpf: "", email: "", telefone: "", endereco: "" });
+                setPaciente({ nome: "", convenio: "", cpf: "", email: "", telefone: "", endereco: "" });
             });
             console.log("Paciente atualizado com sucesso:", paciente);
+
         }
         catch (error) {
             console.error("Erro ao atualizar paciente:", error);
@@ -212,14 +211,7 @@ function EditarPacientes({ id }) {
                             className="border border-blue rounded p-2" required 
                             value={paciente.nome} onChange={handleChange} 
                         />
-                        <input name="senha" placeholder="Senha" 
-                            className="border border-blue rounded p-2" required
-                            value={paciente.senha} onChange={handleChange} 
-                        />
-                        <input name="convenio" placeholder="Convênio" 
-                            className="border border-blue rounded p-2" required
-                            value={paciente.convenio} onChange={handleChange} 
-                        />
+                        
                         <input name="cpf" placeholder="CPF" 
                             className="border border-blue rounded p-2" required
                             value={paciente.cpf} onChange={handleChange} 
@@ -231,6 +223,10 @@ function EditarPacientes({ id }) {
                         <input name="telefone" placeholder="Telefone" 
                             className="border border-blue rounded p-2" required
                             value={paciente.telefone} onChange={handleChange} 
+                        />
+                        <input name="convenio" placeholder="Convênio" 
+                            className="border border-blue rounded p-2" required
+                            value={paciente.convenio} onChange={handleChange} 
                         />
                         <input name="endereco" placeholder="Endereco" 
                             className="border border-blue rounded p-2" required
@@ -254,10 +250,10 @@ function EditarPacientes({ id }) {
     );
 }
 
-function DeletarPacientes({ id }) {
+function DeletarPacientes({ id }: {id:number}) {
     const idPaciente = id;
     const [pacientes, setPacientes] = useState([]);
-    const deletarPaciente = (id: string) => {
+    const deletarPaciente = (id: number) => {
         fetch(`${apiUrl}/${id}`, {
             method: 'DELETE',
         })
