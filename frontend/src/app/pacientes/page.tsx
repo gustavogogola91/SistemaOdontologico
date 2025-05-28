@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 var apiUrl = "http://localhost:5143/paciente";
@@ -37,33 +37,51 @@ function ListaPacientes() {
     };
 
     useEffect(() => {
-        buscarPacientes();    
+        buscarPacientes();  
     }, []);
 
     return(
         <>
-        {pacientes.length === 0 ? (
-            <p className="text-gray-500">Nenhum paciente encontrado.</p>
-        ) : (
-        pacientes.map((paciente: any) => (
-            <div
-                key={paciente.id}
-                className="flex w-[1000px] justify-evenly items-center divide-dashed border-2 border-blue p-1 rounded-[8px] my-2"
-            >
-                <p className="w-[300px] mx-1.5 border-r border-solid">{paciente.nome}</p>
-                <p className="w-[300px] border-r border-solid">{paciente.convenio || "Convênio"}</p>
-                <p className="w-[200px] border-r border-solid">{paciente.telefone || "(41) 9918-1828"}</p>
-                <EditarPacientes id={paciente.id}/>
-                <DeletarPacientes id={paciente.id}/>
-            </div>
-        ))
-    )}
+        <table className="w-[80vw] table-fixed">
+            <thead>
+                <tr>
+                    <th className="w-[20vw]">Nome</th>
+                    <th className="w-[20vw]">Convênio</th>
+                    <th className="w-[20vw]">Telefone</th>
+                    <th className="w-[20vw]">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {pacientes.length === 0 ? (
+                <tr className="text-gray-500 text-[24px]"><td>Nenhum paciente encontrado.</td></tr>
+                ) : (
+                pacientes.map((paciente: any) => (
+                    <tr 
+                        key={paciente.id}
+                        className="flex w-[80vw] justify-evenly items-center divide-dashed border-2 border-blue p-1 rounded-[8px] my-2 text-center"
+                    >
+                        <td className="w-[20vw] mx-1.5 border-r border-solid">{paciente.nome}</td>
+                        <td className="w-[20vw] border-r border-solid">{paciente.convenio || "Convênio"}</td>
+                        <td className="w-[20vw] border-r border-solid">{paciente.telefone || "(41) 9918-1828"}</td>
+                        <td className="w-[20vw] flex flex-row justify-evenly">
+                            <EditarPacientes pacienteOriginal={paciente}/>
+                            <DeletarPacientes id={paciente.id}/>
+                        </td>
+                    </tr>
+                ))
+            )}
+            </tbody>
+        </table>
+        
         
         </>
     );
 }
 
 function AdicionarPacientes() {
+
+    const router  = useRouter();
+
     const [showModal, setShowModal] = useState(false);
     const [novoPaciente, setNovoPaciente] = useState({
         nome: "",
@@ -83,7 +101,9 @@ function AdicionarPacientes() {
             }).then(() => {
                 setShowModal(false);
                 setNovoPaciente({ nome: "", convenio: "", cpf: "", email: "", telefone: "", endereco: "" });
-                // router.reload();
+            
+            }).finally(() => {
+                window.location.reload();
             });
             console.log("Paciente adicionado com sucesso:", novoPaciente);
         }
@@ -115,27 +135,27 @@ function AdicionarPacientes() {
                     <h2 className="text-xl font-bold text-blue mb-2">Novo Paciente</h2>
                     <form onSubmit={handleSubmit} className="flex flex-col gap-2">
                         <input name="nome" placeholder="Nome" 
-                            className="border border-blue rounded p-2" required 
+                            className="border border-blue rounded p-2" required maxLength={30}
                             value={novoPaciente.nome} onChange={handleChange} 
                         />
                         
                         <input name="cpf" placeholder="CPF" 
-                            className="border border-blue rounded p-2" required
+                            className="border border-blue rounded p-2" required maxLength={14}
                             value={novoPaciente.cpf} onChange={handleChange} 
                         />
-                        <input name="email" placeholder="Email" 
-                            className="border border-blue rounded p-2" required
+                        <input name="email" placeholder="Email" type="email"
+                            className="border border-blue rounded p-2" required maxLength={50}
                             value={novoPaciente.email} onChange={handleChange} 
                         />
                         <input name="telefone" placeholder="Telefone" 
-                            className="border border-blue rounded p-2" required
+                            className="border border-blue rounded p-2" required maxLength={15}
                             value={novoPaciente.telefone} onChange={handleChange} 
                         />
-                        <input name="convenio" placeholder="Convênio" 
+                        <input name="convenio" placeholder="Convênio" maxLength={20}
                             className="border border-blue rounded p-2" required
                             value={novoPaciente.convenio} onChange={handleChange} 
                         />
-                        <input name="endereco" placeholder="Endereco" 
+                        <input name="endereco" placeholder="Endereco" maxLength={50}
                             className="border border-blue rounded p-2" required
                             value={novoPaciente.endereco} onChange={handleChange} 
                         />
@@ -157,26 +177,29 @@ function AdicionarPacientes() {
     );
 }
 
-function EditarPacientes({ id }: {id:number}) {
+function EditarPacientes({ pacienteOriginal }: {pacienteOriginal:any}) {
     const [showModal, setShowModal] = useState(false);
     const [paciente, setPaciente] = useState({
-        nome: "",
-        convenio: "",
-        cpf: "",
-        email: "",
-        telefone: "",
-        endereco: ""
+        nome: pacienteOriginal.nome,
+        convenio: pacienteOriginal.convenio,
+        cpf: pacienteOriginal.cpf,
+        email: pacienteOriginal.email,
+        telefone: pacienteOriginal.telefone,
+        endereco: pacienteOriginal.endereco
     });
+
+    
 
     const putPacientes = (paciente: { nome: string, convenio: string, cpf: string, email: string, telefone: string, endereco: string }) => {
         try {
-            fetch(`${apiUrl}/${id}`, {
+            fetch(`${apiUrl}/${pacienteOriginal.id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(paciente),
             }).then(() => {
                 setShowModal(false);
                 setPaciente({ nome: "", convenio: "", cpf: "", email: "", telefone: "", endereco: "" });
+                window.location.reload()
             });
             console.log("Paciente atualizado com sucesso:", paciente);
 
@@ -208,28 +231,28 @@ function EditarPacientes({ id }: {id:number}) {
                     <h2 className="text-xl font-bold text-blue mb-2">Editar Paciente</h2>
                     <form onSubmit={handleSubmit} className="flex flex-col gap-2">
                         <input name="nome" placeholder="Nome" 
-                            className="border border-blue rounded p-2" required 
+                            className="border border-blue rounded p-2" required  maxLength={30}
                             value={paciente.nome} onChange={handleChange} 
                         />
                         
                         <input name="cpf" placeholder="CPF" 
-                            className="border border-blue rounded p-2" required
+                            className="border border-blue rounded p-2" required maxLength={14}
                             value={paciente.cpf} onChange={handleChange} 
                         />
-                        <input name="email" placeholder="Email" 
-                            className="border border-blue rounded p-2" required
+                        <input name="email" placeholder="Email" type="email"
+                            className="border border-blue rounded p-2" required maxLength={50}
                             value={paciente.email} onChange={handleChange} 
                         />
                         <input name="telefone" placeholder="Telefone" 
-                            className="border border-blue rounded p-2" required
+                            className="border border-blue rounded p-2" required maxLength={15}
                             value={paciente.telefone} onChange={handleChange} 
                         />
                         <input name="convenio" placeholder="Convênio" 
-                            className="border border-blue rounded p-2" required
+                            className="border border-blue rounded p-2" required maxLength={20}
                             value={paciente.convenio} onChange={handleChange} 
                         />
                         <input name="endereco" placeholder="Endereco" 
-                            className="border border-blue rounded p-2" required
+                            className="border border-blue rounded p-2" required maxLength={50}
                             value={paciente.endereco} onChange={handleChange} 
                         />
                         <div className="flex gap-4 mt-2">
@@ -259,6 +282,9 @@ function DeletarPacientes({ id }: {id:number}) {
         })
         .then(() => {
             setPacientes(pacientes.filter((p: any) => p.id !== id));
+        })
+        .finally(() => {
+            window.location.reload();
         })
         .catch((error) => console.error('Erro ao deletar paciente:', error));
     };
