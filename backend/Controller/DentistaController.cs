@@ -2,7 +2,7 @@ using SistemaOdontologico.Models;
 using SistemaOdontologico.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
+using backend.Services;
 
 namespace SistemaOdontologico.Controllers
 {
@@ -11,10 +11,12 @@ namespace SistemaOdontologico.Controllers
     public class DentistaController : ControllerBase
     {
         private readonly AppDbContext _database;
+        private readonly IEncryptService _hasher;
 
-        public DentistaController(AppDbContext database)
+        public DentistaController(AppDbContext database, IEncryptService hasher)
         {
             _database = database;
+            _hasher = hasher;
         }
 
         [HttpGet]
@@ -35,6 +37,8 @@ namespace SistemaOdontologico.Controllers
             {
                 return BadRequest("Dados do dentista inválidos!");
             }
+
+            dentista.Senha = _hasher.HashUserPassword(dentista.Senha!);
 
             _database.tb_dentista.Add(dentista);
             await _database.SaveChangesAsync();
