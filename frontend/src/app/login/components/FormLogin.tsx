@@ -1,5 +1,7 @@
 "use client"
 
+import Button from "@/components/ui/Button";
+
 
 export const FormLogin = () => {
 
@@ -22,12 +24,12 @@ export const FormLogin = () => {
         // }
     }
     return(
-        <form onSubmit={handleSubmit}>
-            <label htmlFor="username" className="block">Usuário</label>
-            <input type="text" name="username" id="username" />
-            <label htmlFor="password" className="block">Senha</label>
-            <input type="password" name="password" id="password" />
-            <button type="submit">Entrar</button>
+        <form onSubmit={handleSubmit} className="flex flex-col">
+            <label htmlFor="username" className="block mt-[50px] mb-[10px]">Usuário</label>
+            <input type="text" name="username" id="username" className="w-full p-1 bg-white rounded"/>
+            <label htmlFor="password" className="block mt-[50px] mb-[10px] ">Senha</label>
+            <input type="password" name="password" id="password" className="w-full p-1 bg-white rounded"/>
+            <button type="submit" className="block bg-blue rounded-[8px] font-bold text-[16px] w-[210px] my-5 h-[40px] cursor-pointer uppercase text-white text-center">Entrar</button>
         </form>
     )
 }
