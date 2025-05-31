@@ -14,7 +14,7 @@ export default function CriarProcedimento() {
   const [responsavel, setResponsavel] = useState('');
   const [pagamento, setPagamento] = useState(''); 
   const [observacoes, setObservacoes] = useState('');
-  const [dentists, setDentistas] = useState<Dentista[]>([]);
+  const [dentistas, setDentistas] = useState<Dentista[]>([]);
   const router = useRouter();
 
   useEffect(() => {
@@ -23,7 +23,8 @@ export default function CriarProcedimento() {
       const data = await buscarDentistas();
       setDentistas(data);
     }
-  })
+    fetchDentistas();
+  },[])
 
   // Função para formatar string para moeda BRL
   const formatBRL = (value: string) => {
@@ -98,8 +99,8 @@ export default function CriarProcedimento() {
               onChange={(e) => setResponsavel(e.target.value)}
             >
               <option value="">Selecione um responsável</option>
-              {dentists.map((dent) => (
-                <option key={dent.id}>resp.nome</option>
+              {dentistas.map((dent) => (
+                <option key={dent.id} value={dent.id}>{dent.nome}</option>
               ))}
             </select>
           </div>
