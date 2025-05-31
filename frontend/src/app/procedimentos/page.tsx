@@ -1,15 +1,29 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '@/components/ui/Header';
-import { criarProcedimento } from './actions';
+import { criarProcedimento, buscarDentistas } from './actions';
 import { useRouter } from 'next/navigation';
+
+interface Dentista {
+  id: number;
+  nome: string;
+}
 
 export default function CriarProcedimento() {
   const [procedimento, setProcedimento] = useState('');
   const [responsavel, setResponsavel] = useState('');
   const [pagamento, setPagamento] = useState(''); 
   const [observacoes, setObservacoes] = useState('');
+  const [dentists, setDentistas] = useState<Dentista[]>([]);
   const router = useRouter();
+
+  useEffect(() => {
+    
+    const fetchDentistas = async () => {
+      const data = await buscarDentistas();
+      setDentistas(data);
+    }
+  })
 
   // Função para formatar string para moeda BRL
   const formatBRL = (value: string) => {
@@ -84,9 +98,9 @@ export default function CriarProcedimento() {
               onChange={(e) => setResponsavel(e.target.value)}
             >
               <option value="">Selecione um responsável</option>
-              <option value="1">Dr. Marcos Paulo</option>
-              <option value="2">Dra. Ana Beatriz</option>
-              <option value="3">Dr. João Pedro</option>
+              {dentists.map((dent) => (
+                <option key={dent.id}>resp.nome</option>
+              ))}
             </select>
           </div>
         </div>

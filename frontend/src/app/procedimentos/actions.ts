@@ -33,3 +33,18 @@ export async function criarProcedimento({
     throw error;
   }
 }
+
+export async function buscarDentistas() {
+  try {
+    const res = await fetch('http://localhost:5143/dentista', {
+      method: 'GET'
+    });
+
+    if(!res.ok) throw new Error('Erro ao buscar dentistas');
+
+    return await res.json();
+  } catch(error) {
+    console.error('Erro na requisição GET');
+    throw error;
+  }
+}
