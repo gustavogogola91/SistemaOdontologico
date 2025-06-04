@@ -71,7 +71,6 @@ namespace Backend.Controller
 
         consultaExistente.Paciente = consulta.Paciente;
         consultaExistente.Dentista = consulta.Dentista;
-        consultaExistente.Procedimento = consulta.Procedimento;
         consultaExistente.Observacoes = consulta.Observacoes;
         consultaExistente.Convenio = consulta.Convenio;
 
