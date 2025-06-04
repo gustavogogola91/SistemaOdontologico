@@ -5,7 +5,6 @@ using backend.FileEncryptor;
 using backend.Restore;
 using Quartz;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>
@@ -17,6 +16,7 @@ builder.Services.AddCors(options =>
               .AllowAnyHeader();
     });
 });
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddDbContext<AppDbContext>(opt => opt.UseNpgsql(builder.Configuration.GetConnectionString("DbConnectionString")));
 
