@@ -8,7 +8,7 @@ public class Procedimento
     public int Id { get; set; }
 
     [Required(ErrorMessage = "O atributo nome é obrigatório.")]
-    public string Nome { get; set; }
+    public string? Nome { get; set; }
     public string? Observacoes { get; set; }
 
     [Required(ErrorMessage = "O atributo dentista é obrigatório.")]
