@@ -7,7 +7,7 @@ namespace backend.Models
     {
         public ProcedimentoConsulta(int procedimentoId)
         {
-            this.ProcedimentoId = procedimentoId;
+            ProcedimentoId = procedimentoId;
         }
         
         [Key]

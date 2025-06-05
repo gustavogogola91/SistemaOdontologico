@@ -2,7 +2,7 @@ namespace backend.DTO
 {
     public class ConsultaDTO
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public PacienteDTO? Paciente { get; set; }
         public DentistaDTO? Dentista { get; set; }
         public DateTime DataHora { get; set; }

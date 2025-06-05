@@ -5,13 +5,13 @@ namespace SistemaOdontologico.Models;
 public class Paciente
 {
     [Key]
-    public int Id { get; set; }
+    public long Id { get; set; }
 
-    public string? Nome { get; set; }
+    public required string Nome { get; set; }
     public string? Convenio { get; set; }
     public DateOnly DataNascimento { get; set; }
-    public string? CPF { get; set; }
-    public string? Email { get; set; }
-    public string? Telefone { get; set; }
-    public string? Endereco { get; set; }
+    public required string CPF { get; set; }
+    public required string Email { get; set; }
+    public required string Telefone { get; set; }
+    public required string Endereco { get; set; }
 }

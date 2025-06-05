@@ -4,7 +4,7 @@ using backend.Models;
 public class Dentista : IFuncionario
 {
     [Key]
-    public int Id { get; set; }
+    public long Id { get; set; }
     public required string Nome { get; set; }
 
     [Required(ErrorMessage = "O campo {0} é obrigatório.")]
