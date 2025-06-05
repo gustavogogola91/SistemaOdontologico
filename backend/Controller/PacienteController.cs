@@ -2,6 +2,8 @@ using SistemaOdontologico.Models;
 using SistemaOdontologico.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using backend.DTO;
+using AutoMapper;
 
 namespace SistemaOdontologico.Controllers
 {
@@ -10,36 +12,36 @@ namespace SistemaOdontologico.Controllers
     public class PacienteController : ControllerBase
     {
         private readonly AppDbContext _database;
+        private readonly IMapper _mapper;
 
-        public PacienteController(AppDbContext database)
+        public PacienteController(AppDbContext database, IMapper mapper)
         {
             _database = database;
+            _mapper = mapper;
         }
-   
+
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Paciente>>> GetPacientes()
+        public async Task<ActionResult<IEnumerable<PacienteDTO>>> GetPacientes()
         {
             var pacientes = await _database.tb_paciente.ToListAsync();
             if (pacientes == null || !pacientes.Any())
             {
                 return NotFound("Nenhum paciente cadastrado!");
             }
-            return Ok(pacientes);
+
+            var pacientesDTO = _mapper.Map<List<PacienteDTO>>(pacientes);
+            return Ok(pacientesDTO);
         }
-    
+
         [HttpPost]
-        public async Task<ActionResult> AddPaciente([FromBody] Paciente paciente)
+        public async Task<ActionResult> AddPaciente([FromBody] PacientePostDTO pacientePost)
         {
-            var verify = await _database.tb_paciente.FindAsync(paciente.Id);
-            
-            if (paciente == null)
+            if (!ModelState.IsValid)
             {
                 return BadRequest("Paciente inválido!");
-            } 
-            else if(verify != null) 
-            {
-                return BadRequest("Já existe um paciente com esse ID!");
             }
+
+            var paciente = _mapper.Map<Paciente>(pacientePost);
 
             _database.tb_paciente.Add(paciente);
             await _database.SaveChangesAsync();
@@ -47,7 +49,7 @@ namespace SistemaOdontologico.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Paciente>> GetPaciente(int id)
+        public async Task<ActionResult<PacienteDTO>> GetPaciente(int id)
         {
             var paciente = await _database.tb_paciente.FindAsync(id);
 
@@ -56,11 +58,13 @@ namespace SistemaOdontologico.Controllers
                 return NotFound("Paciente não encontrado!");
             }
 
-            return Ok(paciente);
+            var pacienteDTO = _mapper.Map<PacienteDTO>(paciente);
+
+            return Ok(pacienteDTO);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePaciente(int id, [FromBody] Paciente paciente)
+        public async Task<IActionResult> UpdatePaciente(int id, [FromBody] PacientePutDTO paciente)
         {
             var pacienteExistente = await _database.tb_paciente.FindAsync(id);
 

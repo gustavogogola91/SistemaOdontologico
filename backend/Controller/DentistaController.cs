@@ -1,8 +1,10 @@
-using SistemaOdontologico.Models;
 using SistemaOdontologico.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using backend.DTO;
+using AutoMapper;
 using backend.Services;
+
 
 namespace SistemaOdontologico.Controllers
 {
@@ -11,42 +13,50 @@ namespace SistemaOdontologico.Controllers
     public class DentistaController : ControllerBase
     {
         private readonly AppDbContext _database;
+        private readonly IMapper _mapper;
         private readonly IEncryptService _hasher;
 
-        public DentistaController(AppDbContext database, IEncryptService hasher)
+        public DentistaController(AppDbContext database, IMapper mapper, IEncryptService hasher)
         {
             _database = database;
+            _mapper = mapper;
             _hasher = hasher;
+        
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Dentista>>> GetDentistas()
+        public async Task<ActionResult<IEnumerable<DentistaDTO>>> GetDentistas()
         {
             var dentistas = await _database.tb_dentista.ToListAsync();
             if (dentistas == null || !dentistas.Any())
             {
                 return NotFound("Nenhum dentista cadastrado!");
             }
-            return Ok(dentistas);
+
+            var dentistasDTO = _mapper.Map<List<DentistaDTO>>(dentistas);
+            return Ok(dentistasDTO);
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddDentista([FromBody] Dentista dentista)
+        public async Task<ActionResult> AddDentista([FromBody] DentistaPostDTO dentistaPost)
         {
-            if (dentista == null)
+            if (!ModelState.IsValid)
             {
                 return BadRequest("Dados do dentista inválidos!");
             }
 
+            var dentista = _mapper.Map<Dentista>(dentistaPost);
             dentista.Senha = _hasher.HashUserPassword(dentista.Senha!);
 
             _database.tb_dentista.Add(dentista);
             await _database.SaveChangesAsync();
-            return Created("Dentista criado com sucesso", dentista);
+
+            var dentistaDTO = _mapper.Map<DentistaDTO>(dentista);
+            return Created("Dentista criado com sucesso", dentistaDTO);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Dentista>> GetDentista(long id)
+        public async Task<ActionResult<DentistaDTO>> GetDentista(long id)
         {
             var dentista = await _database.tb_dentista.FindAsync(id);
 
@@ -55,11 +65,13 @@ namespace SistemaOdontologico.Controllers
                 return NotFound("Dentista não encontrado!");
             }
 
-            return Ok(dentista);
+            var dentistaDTO = _mapper.Map<DentistaDTO>(dentista);
+
+            return Ok(dentistaDTO);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateDentista(long id, [FromBody] Dentista dentista)
+        public async Task<IActionResult> UpdateDentista(long id, [FromBody] DentistaPutDTO dentista)
         {
             var dentistaExistente = await _database.tb_dentista.FindAsync(id);
 
@@ -68,7 +80,6 @@ namespace SistemaOdontologico.Controllers
                 return NotFound("Dentista não encontrado!");
             }
 
-            // Atualiza todas as propriedades
             dentistaExistente.Nome = dentista.Nome;
             dentistaExistente.Especialidade = dentista.Especialidade;
             dentistaExistente.CRO = dentista.CRO;

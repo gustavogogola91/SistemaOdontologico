@@ -1,24 +1,18 @@
 using System.ComponentModel.DataAnnotations;
+using backend.Models;
 
 namespace SistemaOdontologico.Models;
 
 public class Consulta
 {
     [Key]
-    public int Id { get; set; }
-    [Required (ErrorMessage = "O campo pacienteé obrigatório.")]
-    public string? Paciente { get; set; }
-    [Required (ErrorMessage = "O campo dentista} é obrigatório.")]
-    public string? Dentista { get; set; }
-    [Required (ErrorMessage = "O campo datahora é obrigatório.")]
-    public DateTime DataHora { get; private set; }
-    [Required (ErrorMessage = "O campo procedimento é obrigatório.")]
-    public string? Procedimento { get; set; }
+    public long Id { get; set; }
+    public long PacienteId { get; set; }
+    public Paciente? Paciente { get; set; }
+    public long DentistaId { get; set; }
+    public Dentista? Dentista { get; set; }
+    public DateTime DataHora { get; set; }
+    public ICollection<ProcedimentoConsulta>? Procedimentos { get; set; } = [];
     public string? Observacoes { get; set; }
     public string? Convenio { get; set; }
-
-    public Consulta()
-        {
-            DataHora = DateTime.UtcNow;
-        }
 }
