@@ -12,4 +12,6 @@ public class AppDbContext : DbContext
     public DbSet<Consulta> tb_consulta { get; set; }
     public DbSet<Paciente> tb_paciente { get; set; } 
     public DbSet<Funcionario> tb_funcionario { get; set; }
+    public DbSet<Procedimento> tb_procedimento { get; set; } 
+
 }
