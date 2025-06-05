@@ -11,7 +11,9 @@ namespace backend.DTO
         public DateOnly DataNascimento { get; set; }
         [Required(ErrorMessage = "O campo CPF é obrigatório.")]
         public string? CPF { get; set; }
+        [EmailAddress(ErrorMessage = "Email em formato inválido")]
         public string? Email { get; set; }
+        [Phone(ErrorMessage = "Telefone em formato inválido")]
         public string? Telefone { get; set; }
         public string? Endereco { get; set; }
     }

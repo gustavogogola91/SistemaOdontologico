@@ -19,9 +19,11 @@ namespace backend.config
             CreateMap<PacientePostDTO, Paciente>();
 
             CreateMap<Procedimento, ProcedimentoDTO>();
+            CreateMap<Procedimento, ProcedimentoResumidoDTO>();
             CreateMap<ProcedimentoPostDTO, Procedimento>();
 
             CreateMap<ProcedimentoConsulta, ProcedimentoConsultaDTO>();
+            CreateMap<ProcedimentoPostDTO, Procedimento>();
         }
     }
 }

@@ -5,6 +5,11 @@ namespace backend.Models
 {
     public class ProcedimentoConsulta
     {
+        public ProcedimentoConsulta(int procedimentoId)
+        {
+            this.ProcedimentoId = procedimentoId;
+        }
+        
         [Key]
         public int Id { get; set; }
         public int ConsultaId { get; set; }
