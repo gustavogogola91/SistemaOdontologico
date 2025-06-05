@@ -7,6 +7,7 @@
   --green: #009951;
   --orange: #975102;
   --red: #C00F0C;
+  --blue-alpha: rgba(4, 56, 115, 0.1);
 }
 
 @theme inline {
@@ -15,6 +16,7 @@
   --color-blue: var(--blue);
   --color-green: var(--green);
   --color-red: var(--red);
+  --color-blue-alpha: var(--blue-alpha);
   --color-orange: var(--orange);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);

@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using backend.DTO;
 using AutoMapper;
+using backend.Services;
+
 
 namespace SistemaOdontologico.Controllers
 {
@@ -12,11 +14,14 @@ namespace SistemaOdontologico.Controllers
     {
         private readonly AppDbContext _database;
         private readonly IMapper _mapper;
+        private readonly IEncryptService _hasher;
 
-        public DentistaController(AppDbContext database, IMapper mapper)
+        public DentistaController(AppDbContext database, IMapper mapper, IEncryptService hasher)
         {
             _database = database;
             _mapper = mapper;
+            _hasher = hasher;
+        
         }
 
         [HttpGet]
@@ -41,6 +46,7 @@ namespace SistemaOdontologico.Controllers
             }
 
             var dentista = _mapper.Map<Dentista>(dentistaPost);
+            dentista.Senha = _hasher.HashUserPassword(dentista.Senha!);
 
             _database.tb_dentista.Add(dentista);
             await _database.SaveChangesAsync();
