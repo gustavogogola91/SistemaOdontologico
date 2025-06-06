@@ -9,9 +9,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-
-//TODO: Implementar JWT
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>

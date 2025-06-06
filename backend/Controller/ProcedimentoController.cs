@@ -42,7 +42,7 @@ namespace Backend.Controller
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProcedimentoDTO>> GetProcedimento(int id)
+        public async Task<ActionResult<ProcedimentoDTO>> GetProcedimento(long id)
         {
             if (id <= 0)
                 return BadRequest("ID de procura inválido.");
@@ -90,7 +90,7 @@ namespace Backend.Controller
             }
         }
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProcedimento(int id, [FromBody] ProcedimentoPutDTO procedimento)
+        public async Task<IActionResult> UpdateProcedimento(long id, [FromBody] ProcedimentoPutDTO procedimento)
         {
             if (id != procedimento.Id)
             {
@@ -120,7 +120,7 @@ namespace Backend.Controller
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProcedimento(int id)
+        public async Task<IActionResult> DeleteProcedimento(long id)
         {
             if (id <= 0)
                 return BadRequest("ID Inválido.");

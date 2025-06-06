@@ -63,7 +63,7 @@ namespace Backend.Controller
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ConsultaDTO>> GetConsultas(int id)
+        public async Task<ActionResult<ConsultaDTO>> GetConsultas(long id)
         {
             var consulta = await _database.tb_consulta.Include(c => c.Paciente).Include(c => c.Dentista).Include(c => c.Procedimentos).ThenInclude(p => p.Procedimento).FirstOrDefaultAsync(c => c.Id == id);
 
@@ -78,7 +78,7 @@ namespace Backend.Controller
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateConsulta(int id, [FromBody] ConsultaPutDTO consulta)
+        public async Task<IActionResult> UpdateConsulta(long id, [FromBody] ConsultaPutDTO consulta)
         {
             var consultaExistente = await _database.tb_consulta.FindAsync(id);
 
@@ -96,7 +96,7 @@ namespace Backend.Controller
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteConsulta(int id)
+        public async Task<IActionResult> DeleteConsulta(long id)
         {
             var consulta = await _database.tb_consulta.FindAsync(id);
 

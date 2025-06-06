@@ -24,6 +24,9 @@ namespace backend.config
 
             CreateMap<ProcedimentoConsulta, ProcedimentoConsultaDTO>();
             CreateMap<ProcedimentoPostDTO, Procedimento>();
+
+            CreateMap<Funcionario, FuncionarioDTO>();
+            CreateMap<FuncionarioPostDTO, Funcionario>();
         }
     }
 }
