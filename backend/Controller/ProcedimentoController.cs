@@ -41,6 +41,27 @@ namespace Backend.Controller
             }
         }
 
+        [HttpGet("nome")]
+        public async Task<ActionResult<IEnumerable<ProcedimentoNomeDTO>>> GetNomeProcedimentos()
+        {
+            try
+            {
+                var procedimentos = await _database.tb_procedimento.Include(p => p.Dentista).ToListAsync();
+                if (procedimentos == null || !procedimentos.Any())
+                {
+                    return NotFound("Sem Procedimentos cadastradas!");
+                }
+
+                var procedimentosDTO = _mapper.Map<List<ProcedimentoNomeDTO>>(procedimentos);
+
+                return Ok(procedimentosDTO);
+            }
+            catch (Exception error)
+            {
+                return BadRequest(error);
+            }
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<ProcedimentoDTO>> GetProcedimento(long id)
         {
