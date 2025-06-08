@@ -1,8 +1,13 @@
 "use client";
 
-import { useEffect, useState, ChangeEvent } from "react";
+import { useEffect, useState, ChangeEvent, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { handleGetConsultas } from "./actions";
+import {
+  handleGetConsultas,
+  handleGetDentistas,
+  handleGetProcedimentos,
+  handlePutConsulta
+} from "./actions";
 
 interface Dentista {
   id: number;
@@ -12,6 +17,11 @@ interface Dentista {
 interface Paciente {
   id: number;
   nome: string;
+}
+
+interface ListaProcedimento {
+  id: number;
+  procedimento: Procedimento;
 }
 
 interface Procedimento {
@@ -24,20 +34,203 @@ interface Consulta {
   paciente: Paciente;
   dentista: Dentista;
   dataHora: string;
-  procedimentos: Procedimento[];
+  procedimentos: ListaProcedimento[];
+  observacoes?: string;
+  convenio?: string;
+}
+interface ConsultaPut {
+  dentistaId: number;
+  dataHora: string;
   observacoes?: string;
   convenio?: string;
 }
 
+interface DentistaNome {
+  id: number;
+  nome: string;
+}
+
+interface ProcedimentoNome {
+  id: number;
+  nome: string;
+}
+
+interface ModalProps {
+  onClose: Function;
+  consulta: Consulta | undefined;
+}
+
+const Modal = ({ onClose, consulta }: ModalProps) => {
+
+  if (consulta == undefined) {
+    return;
+  }
+
+  const [dentistas, setDentistas] = useState<DentistaNome[]>([]);
+  const [procedimentos, setProcedimentos] = useState<ProcedimentoNome[]>([]);
+
+  const [selectedDentistaId, setSelectedDentistaId] = useState(0);
+  const [selectedProcedimentoId, setSelectedProcedimentoId] = useState(0);
+  const [dataHora, setDataHora] = useState("");
+  const observacaoRef = useRef<HTMLTextAreaElement>(null);
+
+  const putConsulta = async () => {
+    const dataTratada = new Date(dataHora);
+    const consultaPut : ConsultaPut = {
+      dentistaId: selectedDentistaId,
+      dataHora: dataTratada.toISOString(),
+      observacoes: observacaoRef.current?.value,
+      convenio: consulta.convenio
+    }
+
+    console.log(consultaPut);
+
+    const status = await handlePutConsulta(consultaPut, consulta.id);
+    if (status != 200) {
+        alert("Erro ao alterar consulta")
+    } 
+
+    window.location.reload();
+  }
+
+  const fetchDentista = async () => {
+    const data: DentistaNome[] = await handleGetDentistas();
+    setDentistas(data);
+  };
+
+  const fetchProcedimento = async () => {
+    const data: ProcedimentoNome[] = await handleGetProcedimentos();
+    setProcedimentos(data);
+  };
+
+  useEffect(() => {
+    fetchDentista();
+    fetchProcedimento();
+  }, []);
+
+  useEffect(() => {
+    if (consulta?.dentista?.id) {
+      setSelectedDentistaId(consulta.dentista.id);
+    }
+  }, [consulta]);
+
+  useEffect(() => {
+    if (consulta?.procedimentos[0].procedimento.id) {
+      setSelectedProcedimentoId(consulta.procedimentos[0].procedimento.id);
+    }
+  }, [consulta]);
+
+  useEffect(() => {
+    if (consulta?.dataHora) {
+      const dataFormatada = consulta.dataHora.slice(0, 16);
+      setDataHora(dataFormatada);
+    }
+  }, [consulta]);
+
+  if (consulta == undefined) {
+    return;
+  }
+
+  return (
+    <div className="absolute w-[50%] h-[80%] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform rounded-[10px] z-10 bg-white border-[5px] border-[#043873] flex-col items-center gap-6 transition duration-300 text-center">
+      <h1 className="uppercase text-[24px] font-bold text-[#043873] mt-[20px]">
+        Alterar agendamento
+      </h1>
+      <form
+        className="flex flex-col items-center gap-[16px] text-center"
+        onSubmit={(e) => {
+          e.preventDefault();
+          putConsulta();
+        }}
+      >
+        <label htmlFor="nome">Paciente</label>
+        <input
+          type="text"
+          name="Paciente"
+          id="paciente"
+          defaultValue={consulta?.paciente.nome}
+          disabled
+          className="border-[1px] border-[#043873] rounded-[10px] p-[3px] w-[350px]"
+          required
+        />
+        <label htmlFor="responsavel">Dentista</label>
+        <select
+          name="Dentista"
+          id="Dentista"
+          value={selectedDentistaId}
+          onChange={(e) => setSelectedDentistaId(parseInt(e.target.value))}
+          className="border-[1px] border-[#043873] rounded-[10px] p-[3px] w-[350px]"
+          required
+        >
+          <option value="0">Selecione um dentista</option>
+          {dentistas.map((dentista) => (
+            <option value={dentista.id} key={dentista.id}>
+              {dentista.nome}
+            </option>
+          ))}
+        </select>
+        <label htmlFor="data">Data e horário</label>
+        <input
+          type="datetime-local"
+          name="DataHora"
+          id="data"
+          value={dataHora}
+          onChange={(e) => setDataHora(e.target.value)}
+          className="border-[1px] border-[#043873] rounded-[10px] p-[3px] w-[350px]"
+          required
+        />
+        <label htmlFor="procedimento">Procedimento</label>
+        <select
+          name="Procedimento"
+          id="procedimento"
+          value={selectedProcedimentoId}
+          onChange={(e) => setSelectedProcedimentoId(parseInt(e.target.value))}
+          className="border-[1px] border-[#043873] rounded-[10px] p-[3px] w-[350px]"
+          required
+        >
+          <option value="0">Selecione um Procedimento</option>
+          {procedimentos.map((procedimento) => (
+            <option value={procedimento.id} key={procedimento.id}>
+              {procedimento.nome}
+            </option>
+          ))}
+        </select>
+        <label htmlFor="observacao">Observações</label>
+        <textarea
+          name="Observacoes"
+          id="observacoes"
+          ref={observacaoRef}
+          defaultValue={consulta?.observacoes}
+          className="border-[1px] border-[#043873] rounded-[10px] p-[3px] w-[350px]"
+          required
+        />
+        <div className="flex flex-row gap-9 items-center">
+          <button
+            type="reset"
+            className="font-bold text-white bg-[#C00F0C]  p-[5px] rounded-[5px] uppercase mt-[10px] cursor-pointer"
+            onClick={() => {
+              onClose();
+            }}
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            className="font-bold text-white bg-[#009951]  p-[5px] rounded-[5px] uppercase mt-[10px] cursor-pointer"
+          >
+            Alterar
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+};
+
 const ListarConsultas = () => {
   const router = useRouter();
   const [consultas, setConsultas] = useState<Consulta[]>([]);
-  const [filters, setFilters] = useState({
-    dentista: "",
-    paciente: "",
-    procedimento: "",
-    dataHora: "",
-  });
+  const [showModal, setShowModal] = useState(false);
+  const [consultaSelecionada, setConsultaSelecionada] = useState<Consulta>();
 
   useEffect(() => {
     const fetchConsultas = async () => {
@@ -47,20 +240,15 @@ const ListarConsultas = () => {
     fetchConsultas();
   }, []);
 
-  const handleFilterChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setFilters((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  const closeModal = () => {
+    setShowModal(false);
+    setConsultaSelecionada(undefined);
   };
 
-  const filteredConsultas = consultas.filter(
-    (c) =>
-      c.dentista.nome.toLowerCase().includes(filters.dentista.toLowerCase()) &&
-      c.paciente.nome.toLowerCase().includes(filters.paciente.toLowerCase()) &&
-      (filters.dataHora
-        ? new Date(c.dataHora)
-            .toISOString()
-            .startsWith(new Date(filters.dataHora).toISOString().slice(0, 16))
-        : true)
-  );
+  const openModal = (consulta: Consulta) => {
+    setConsultaSelecionada(consulta);
+    setShowModal(true);
+  };
 
   return (
     <div className="p-6 bg-white">
@@ -69,31 +257,6 @@ const ListarConsultas = () => {
       </h2>
 
       <div className="flex flex-wrap items-end gap-4 mb-6">
-        {/* Filtros */}
-        {[
-          { id: "dentista", label: "Buscar Doutor(a)", type: "text" },
-          { id: "dataHora", label: "Data e Horário", type: "datetime-local" },
-          { id: "paciente", label: "Buscar Paciente", type: "text" },
-          { id: "procedimento", label: "Buscar Procedimento", type: "text" },
-        ].map((field) => (
-          <div key={field.id} className="flex-1 min-w-[200px]">
-            <label
-              htmlFor={field.id}
-              className="block text-sm font-medium mb-1"
-            >
-              {field.label}
-            </label>
-            <input
-              id={field.id}
-              name={field.id}
-              value={filters[field.id as keyof typeof filters]}
-              onChange={handleFilterChange}
-              type={field.type}
-              className="w-full border border-gray-300 rounded p-2"
-            />
-          </div>
-        ))}
-
         <button
           onClick={() => router.push("/consultas")}
           className="bg-green-500 text-white font-semibold px-4 py-2 rounded hover:bg-green-600"
@@ -103,15 +266,20 @@ const ListarConsultas = () => {
       </div>
 
       <div className="space-y-4 flex gap-4">
-        {filteredConsultas.length > 0 ? (
-          filteredConsultas.map((consulta) => (
+        {consultas.length > 0 ? (
+          consultas.map((consulta) => (
             <div
               key={consulta.id}
               className="border border-blue-600 rounded-lg p-4 shadow-sm w-[25vw] h-[30vh]"
             >
               <div className="flex justify-between items-center mb-2">
                 <h3 className="text-lg font-bold text-blue-700">CONSULTA</h3>
-                <button className="text-sm border border-gray-400 rounded px-2 py-1 hover:bg-gray-100">
+                <button
+                  className="text-sm border border-gray-400 rounded px-2 py-1 hover:bg-gray-100"
+                  onClick={() => {
+                    openModal(consulta);
+                  }}
+                >
                   EDITAR
                 </button>
               </div>
@@ -136,7 +304,7 @@ const ListarConsultas = () => {
               </p>
               <p>
                 <span className="font-semibold">Procedimento:</span>{" "}
-                {consulta.procedimentos[0].nome}
+                {consulta.procedimentos[0].procedimento.nome}
               </p>
               {consulta.observacoes && (
                 <p>
@@ -156,6 +324,9 @@ const ListarConsultas = () => {
           <p className="text-center">Nenhuma consulta encontrada.</p>
         )}
       </div>
+      {showModal && (
+        <Modal consulta={consultaSelecionada} onClose={closeModal} />
+      )}
     </div>
   );
 };
