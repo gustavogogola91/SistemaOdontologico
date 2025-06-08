@@ -2,7 +2,6 @@ import api from "@/lib/api"
 
 export async function handleGetConsultas(){
 
-    //TODO implementar após backend pronto
     try {
         const response = await api.get("/consulta");
         return response.data
