@@ -43,6 +43,7 @@ namespace Backend.Controller
             }
 
             var consulta = _mapper.Map<Consulta>(consultaPost);
+            consulta.DataHora = consulta.DataHora.ToUniversalTime();
 
             if (consultaPost.ListaProcedimentos != null)
             {

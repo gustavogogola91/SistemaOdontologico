@@ -13,12 +13,14 @@ namespace backend.config
             CreateMap<ConsultaPostDTO, Consulta>();
 
             CreateMap<Dentista, DentistaDTO>();
+            CreateMap<Dentista, DentistaNomeDTO>();
             CreateMap<DentistaPostDTO, Dentista>();
 
             CreateMap<Paciente, PacienteDTO>();
             CreateMap<PacientePostDTO, Paciente>();
 
             CreateMap<Procedimento, ProcedimentoDTO>();
+            CreateMap<Procedimento, ProcedimentoNomeDTO>();
             CreateMap<Procedimento, ProcedimentoResumidoDTO>();
             CreateMap<ProcedimentoPostDTO, Procedimento>();
 
