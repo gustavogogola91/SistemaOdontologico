@@ -8,7 +8,7 @@ export async function handlePostConsulta(consulta: any) {
             headers: {
               "Content-Type": "application/json",
             }})
-        return response.data;
+        return response.status;
     } catch (error: any) {
         console.error("Erro ao fazer POST:", error.response?.data || error.message);
         throw error;

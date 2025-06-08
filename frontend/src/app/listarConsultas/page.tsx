@@ -6,7 +6,7 @@ import {
   handleGetConsultas,
   handleGetDentistas,
   handleGetProcedimentos,
-  handlePutConsulta
+  handlePutConsulta,
 } from "./actions";
 
 interface Dentista {
@@ -61,13 +61,15 @@ interface ModalProps {
 }
 
 const Modal = ({ onClose, consulta }: ModalProps) => {
-
   if (consulta == undefined) {
     return;
   }
 
   const [dentistas, setDentistas] = useState<DentistaNome[]>([]);
   const [procedimentos, setProcedimentos] = useState<ProcedimentoNome[]>([]);
+
+  const [sucessMessage, setSucessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const [selectedDentistaId, setSelectedDentistaId] = useState(0);
   const [selectedProcedimentoId, setSelectedProcedimentoId] = useState(0);
@@ -76,22 +78,26 @@ const Modal = ({ onClose, consulta }: ModalProps) => {
 
   const putConsulta = async () => {
     const dataTratada = new Date(dataHora);
-    const consultaPut : ConsultaPut = {
+    const consultaPut: ConsultaPut = {
       dentistaId: selectedDentistaId,
       dataHora: dataTratada.toISOString(),
       observacoes: observacaoRef.current?.value,
-      convenio: consulta.convenio
-    }
+      convenio: consulta.convenio,
+    };
 
     console.log(consultaPut);
 
     const status = await handlePutConsulta(consultaPut, consulta.id);
-    if (status != 200) {
-        alert("Erro ao alterar consulta")
-    } 
+    if (status == 200) {
+      setSucessMessage("Consulta alterada com sucesso");
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+    } else {
+      setErrorMessage("Erro ao alterar consulta, tente novamente");
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+    }
 
     window.location.reload();
-  }
+  };
 
   const fetchDentista = async () => {
     const data: DentistaNome[] = await handleGetDentistas();
@@ -222,6 +228,18 @@ const Modal = ({ onClose, consulta }: ModalProps) => {
           </button>
         </div>
       </form>
+      <p
+        id="mesage"
+        className="font-bold uppercase text-green-800 bg-green-500 mt-4 w-[60%] m-auto"
+      >
+        {sucessMessage}
+      </p>
+      <p
+        id="mesage"
+        className="font-bold uppercase text-red-800 bg-red-500 mt-4 w-[60%] m-auto"
+      >
+        {errorMessage}
+      </p>
     </div>
   );
 };
@@ -265,12 +283,12 @@ const ListarConsultas = () => {
         </button>
       </div>
 
-      <div className="space-y-4 flex gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 p-4">
         {consultas.length > 0 ? (
           consultas.map((consulta) => (
             <div
               key={consulta.id}
-              className="border border-blue-600 rounded-lg p-4 shadow-sm w-[25vw] h-[30vh]"
+              className="border border-blue-600 rounded-lg p-4 shadow-sm "
             >
               <div className="flex justify-between items-center mb-2">
                 <h3 className="text-lg font-bold text-blue-700">CONSULTA</h3>

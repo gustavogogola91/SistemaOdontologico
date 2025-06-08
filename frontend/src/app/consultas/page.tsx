@@ -52,11 +52,14 @@ interface ModalProps {
 const Modal = ({ onClose, paciente }: ModalProps) => {
   const [dentistas, setDentistas] = useState<DentistaNome[]>([]);
   const [procedimentos, setProcedimentos] = useState<ProcedimentoNome[]>([]);
+  const [sucessMessage, setSucessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const dentistaRef = useRef<HTMLSelectElement>(null);
   const dataHoraRef = useRef<HTMLInputElement>(null);
   const procedimentoRef = useRef<HTMLSelectElement>(null);
   const observacaoRef = useRef<HTMLTextAreaElement>(null);
+  const messageRef = useRef<HTMLElement>(null);
 
   const postConsulta = async () => {
     console.log(dataHoraRef.current?.value);
@@ -82,7 +85,19 @@ const Modal = ({ onClose, paciente }: ModalProps) => {
       observacoes: observacaoRef.current?.value,
       convenio: paciente?.convenio,
     };
-    await handlePostConsulta(consulta);
+    const status = await handlePostConsulta(consulta);
+
+    console.log(status);
+
+    if (status == 201) {
+      setSucessMessage("Consulta agendada com sucesso");
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      onClose()
+    } else {
+      setErrorMessage("Erro ao agendar consulta, tente novamente");
+    }
+
+    
   };
 
   const fetchDentista = async () => {
@@ -187,6 +202,15 @@ const Modal = ({ onClose, paciente }: ModalProps) => {
           </button>
         </div>
       </form>
+      <p
+        id="mesage"
+        className="font-bold uppercase text-green-800 bg-green-500 mt-4 w-[60%] m-auto"
+      >
+        {sucessMessage}
+      </p>
+      <p id="mesage" className="font-bold uppercase text-red-800 bg-red-500 mt-4 w-[60%] m-auto">
+        {errorMessage}
+      </p>
     </div>
   );
 };
