@@ -1,16 +1,32 @@
 "use client"
 
-import { createContext, ReactNode, useEffect, useState } from "react";
+import { createContext, ReactNode, use, useEffect, useState } from "react";
 import { destroyCookie, parseCookies, setCookie } from "nookies";
 import { jwtDecode } from "jwt-decode";
 
 
 const apiUrl = "http://localhost:5143"
 
+
+
 type AuthContextType = {
     IsAuthenticated: boolean,
     loginUsuario: (data: SignInData) => Promise<boolean>
     logoutUsuario: () => Promise<void>
+}
+
+type UserRole = 'funcionario' | 'dentista';
+
+interface JwtPayload {
+  userType: UserRole;
+  sub: string;
+  exp: number;
+  iat: number;
+}
+
+export interface AppUser {
+  userType: UserRole;
+  username: string;
 }
 
 export type SignInData = {
@@ -22,6 +38,8 @@ export const AuthContext = createContext({} as AuthContextType)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [IsAuthenticated, setIsAuthenticated] = useState(false);
+    const [usuario, setUsuario] = useState<AppUser | null>(null)
+
 
     useEffect(() => {
         const { 'auth-token': token } = parseCookies();
@@ -47,9 +65,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             }
 
             const data = await response.json();
-            // sessionStorage.setItem("usuarioId", data.id);
-            // sessionStorage.setItem("usuarioNome", data.nome);
-            // console.log("Usuário autenticado:", data.id, data.nome);
             console.log(response.json); //tirar apos debug
 
             return data;
@@ -60,7 +75,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     async function loginUsuario({ username, senha }: SignInData) {
-        // const [user, setUser] = useState<User | null>(null)
+        
 
         const { token = null } = (await loginUsuarioRequest({ username, senha })) || {};
 
@@ -68,21 +83,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setCookie(undefined, 'auth-token', token, {
                 maxAge: 60 * 60 * 1, //1 hora para expirar
             })
-            const decodedToken = jwtDecode(token);
+            const decodedToken = jwtDecode<JwtPayload>(token);
             console.log("Token: ", token);
             console.log("Token decoded: ", decodedToken);
+
             
-            // localStorage.setItem('AuthToken', token);
+            
             setIsAuthenticated(true);
+
+            setCookie(undefined, 'userType', decodedToken.userType)
+            setCookie(undefined, 'userName', decodedToken.sub)
             return true;
         }
 
+        setUsuario(null);
         return false;
         //TODO: salvar nome usuario
-        // setUser(username);
+        
     }
 
     async function logoutUsuario() {
+        destroyCookie(null, 'userType');
+        destroyCookie(null, 'userName');
         destroyCookie(null, 'auth-token');
         setIsAuthenticated(false);
     }

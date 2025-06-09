@@ -6,7 +6,6 @@ public class Paciente
 {
     [Key]
     public long Id { get; set; }
-
     public required string Nome { get; set; }
     public string? Convenio { get; set; }
     public DateOnly DataNascimento { get; set; }

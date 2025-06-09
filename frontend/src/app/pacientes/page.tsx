@@ -5,6 +5,13 @@ import React, { useEffect, useState } from "react";
 
 var apiUrl = "http://localhost:5143/paciente";
 
+export interface Paciente{
+    Id: number
+    nome: string,
+    Convenio: string,
+    Telefone: string,
+}
+
 export default function Pacientes() {
     return(
         <>
@@ -55,17 +62,17 @@ function ListaPacientes() {
                 {pacientes.length === 0 ? (
                 <tr className="text-gray-500 text-[24px]"><td>Nenhum paciente encontrado.</td></tr>
                 ) : (
-                pacientes.map((paciente: any) => (
+                pacientes.map((paciente: Paciente) => (
                     <tr 
-                        key={paciente.id}
+                        key={paciente.Id}
                         className="flex w-[80vw] justify-evenly items-center divide-dashed border-2 border-blue p-1 rounded-[8px] my-2 text-center"
                     >
                         <td className="w-[20vw] mx-1.5 border-r border-solid">{paciente.nome}</td>
-                        <td className="w-[20vw] border-r border-solid">{paciente.convenio || "Convênio"}</td>
-                        <td className="w-[20vw] border-r border-solid">{paciente.telefone || "(41) 9918-1828"}</td>
+                        <td className="w-[20vw] border-r border-solid">{paciente.Convenio || "Convênio"}</td>
+                        <td className="w-[20vw] border-r border-solid">{paciente.Telefone || "(41) 9918-1828"}</td>
                         <td className="w-[20vw] flex flex-row justify-evenly">
                             <EditarPacientes pacienteOriginal={paciente}/>
-                            <DeletarPacientes id={paciente.id}/>
+                            <DeletarPacientes id={paciente.Id}/>
                         </td>
                     </tr>
                 ))

@@ -11,20 +11,27 @@ import Button from "@/components/ui/Button";
 export const FormLogin = () => {
 
      const router = useRouter();
+     const { loginUsuario, logoutUsuario } = useContext(AuthContext);
 
-    const { 'auth-token': AuthToken } = parseCookies();
+    const { 'auth-token': AuthToken, 'userType' : typeToken  } = parseCookies();
 
-    // useEffect(() => {
-    //     if (typeof window !== 'undefined') {
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
 
-    //         if (AuthToken) {
-    //             router.push('/Pages/AulasPage');
-    //         }
-    //     }
-    // }, [router]);
+            if (AuthToken) {
+                if (typeToken == 'dentista') {
+                    router.push('/dashboard');
+                } else if (typeToken == 'funcionario') {
+                    router.push('/consultas');
+                }
+                else {
+                    logoutUsuario()
+                }
+            }
+        }
+    }, [router]);
 
 
-    const { loginUsuario } = useContext(AuthContext);
 
     const [loginData, setLoginData] = useState({
         username: "",
@@ -49,6 +56,11 @@ export const FormLogin = () => {
 
         if (success) {
             console.log(localStorage.getItem('AuthToken'));
+            if (typeToken == 'dentista') {
+                router.push('/dashboard');
+            } else if (typeToken == 'funcionario') {
+                router.push('/consultas');
+            }
 
             // router.push('/Pages/AulasPage');
         } else {
@@ -58,7 +70,7 @@ export const FormLogin = () => {
         // var usuario = await loginUsuario(loginData.email, loginData.senha);
         // if (usuario !== null) {
         //     alert("Parabens, você lembrou seu login (aqui n temos opção de recuperação, Guarde bem)!");
-        //     // Redirecionar para a página inicial ou outra página desejada
+        //     // TODO: Redirecionar para a página inicial ou outra página desejada
         //     return;
         // }
 
@@ -71,12 +83,5 @@ export const FormLogin = () => {
                 <button type="submit" className="btn-primary py-2 text-[16px] font-bold"> Entrar </button>
             </form>
         </>
-        <form onSubmit={handleSubmit} className="flex flex-col">
-            <label htmlFor="username" className="block mt-[50px] mb-[10px]">Usuário</label>
-            <input type="text" name="username" id="username" className="w-full p-1 bg-white rounded"/>
-            <label htmlFor="password" className="block mt-[50px] mb-[10px] ">Senha</label>
-            <input type="password" name="password" id="password" className="w-full p-1 bg-white rounded"/>
-            <button type="submit" className="block bg-blue rounded-[8px] font-bold text-[16px] w-[210px] my-5 h-[40px] cursor-pointer uppercase text-white text-center">Entrar</button>
-        </form>
     )
 }
