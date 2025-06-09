@@ -1,7 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../contexts/AuthContext";
+import { parseCookies } from "nookies";
 
 var apiUrl = "http://localhost:5143/paciente";
 
@@ -13,6 +15,20 @@ export interface Paciente{
 }
 
 export default function Pacientes() {
+    const { logoutUsuario } = useContext(AuthContext);
+    const { 'auth-token': AuthToken } = parseCookies();
+
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!AuthToken) {
+            logoutUsuario()
+            router.push('/login')
+        }
+    }, []);
+
+
+
     return(
         <>
         <div className="flex flex-col items-center">
