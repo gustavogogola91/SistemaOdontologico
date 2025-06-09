@@ -8,7 +8,6 @@ import {
 } from "./actions";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { Console } from "console";
 
 interface Paciente {
   id: number;
@@ -92,12 +91,10 @@ const Modal = ({ onClose, paciente }: ModalProps) => {
     if (status == 201) {
       setSucessMessage("Consulta agendada com sucesso");
       await new Promise((resolve) => setTimeout(resolve, 2000));
-      onClose()
+      onClose();
     } else {
       setErrorMessage("Erro ao agendar consulta, tente novamente");
     }
-
-    
   };
 
   const fetchDentista = async () => {
@@ -208,7 +205,10 @@ const Modal = ({ onClose, paciente }: ModalProps) => {
       >
         {sucessMessage}
       </p>
-      <p id="mesage" className="font-bold uppercase text-red-800 bg-red-500 mt-4 w-[60%] m-auto">
+      <p
+        id="mesage"
+        className="font-bold uppercase text-red-800 bg-red-500 mt-4 w-[60%] m-auto"
+      >
         {errorMessage}
       </p>
     </div>
@@ -220,6 +220,7 @@ const consultas = () => {
   const [showModal, setShowModal] = useState(false);
   const [pacientes, setPacientes] = useState<Paciente[]>([]);
   const [pacienteSelecionado, setPacienteSelecionado] = useState<Paciente>();
+  const [filtroPaciente, setFiltroPaciente] = useState("");
 
   useEffect(() => {
     getPacientes();
@@ -240,6 +241,26 @@ const consultas = () => {
     setPacienteSelecionado(undefined);
   };
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFiltroPaciente(value);
+  };
+
+  function filtrarPorNome<T extends { nome: string }>(
+    lista: T[],
+    termoBusca: string
+  ): T[] {
+    if (!termoBusca.trim()) {
+      return lista;
+    }
+    const termoBuscaLower = termoBusca.toLowerCase();
+    return lista.filter((item) =>
+      (item.nome || "").toLowerCase().includes(termoBuscaLower)
+    );
+  }
+
+  const pacientesFiltrados = filtrarPorNome(pacientes, filtroPaciente);
+
   return (
     <div className="flex flex-col items-center">
       <h1 className="text-3xl my-28 font-bold text-blue">AGENDAR CONSULTA</h1>
@@ -256,15 +277,17 @@ const consultas = () => {
         <input
           id="BuscarFuncionario"
           type="text"
-          className="border-[1px] border-blue rounded-[8px]"
+          value={filtroPaciente}
+          onChange={handleChange}
+          className="border-[1px] border-blue rounded-[8px] p-0.5 w-[400px]"
         />
       </div>
       <div>
         <hr className="mt-12 mb-8 h-0.5 border-t-0 bg-neutral-100 " />
         <h3 className="mx-1.5">Pacientes</h3>
         <ul>
-          {pacientes.length > 0 ? (
-            pacientes.map((paciente) => (
+          {pacientesFiltrados.length > 0 ? (
+            pacientesFiltrados.map((paciente) => (
               <li
                 key={paciente.id}
                 className="flex w-[1000px] justify-evenly items-center divide-dashed border-2 border-blue p-1 rounded-[8px] mb-2"
