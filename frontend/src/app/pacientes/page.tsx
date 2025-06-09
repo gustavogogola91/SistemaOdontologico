@@ -7,7 +7,7 @@ var apiUrl = "http://localhost:5143/paciente";
 
 export interface Paciente{
     Id: number
-    Nome: string,
+    nome: string,
     Convenio: string,
     Telefone: string,
 }
@@ -67,7 +67,7 @@ function ListaPacientes() {
                         key={paciente.Id}
                         className="flex w-[80vw] justify-evenly items-center divide-dashed border-2 border-blue p-1 rounded-[8px] my-2 text-center"
                     >
-                        <td className="w-[20vw] mx-1.5 border-r border-solid">{paciente.Nome}</td>
+                        <td className="w-[20vw] mx-1.5 border-r border-solid">{paciente.nome}</td>
                         <td className="w-[20vw] border-r border-solid">{paciente.Convenio || "Convênio"}</td>
                         <td className="w-[20vw] border-r border-solid">{paciente.Telefone || "(41) 9918-1828"}</td>
                         <td className="w-[20vw] flex flex-row justify-evenly">
