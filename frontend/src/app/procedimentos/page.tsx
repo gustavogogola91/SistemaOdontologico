@@ -1,7 +1,10 @@
 'use client'
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import Header from '@/components/ui/Header';
 import { criarProcedimento, buscarDentistas } from './actions';
 import { useRouter } from 'next/navigation';
+import { AuthContext } from '../contexts/AuthContext';
+import { parseCookies } from 'nookies';
 
 interface Dentista {
   id: number;
@@ -9,12 +12,24 @@ interface Dentista {
 }
 
 export default function CriarProcedimento() {
+  const { logoutUsuario } = useContext(AuthContext);
+  const { 'auth-token': AuthToken } = parseCookies();
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!AuthToken) {
+      logoutUsuario()
+      router.push('/login')
+    }
+  }, []);
+
+
   const [procedimento, setProcedimento] = useState('');
   const [responsavel, setResponsavel] = useState('');
   const [pagamento, setPagamento] = useState(''); 
   const [observacoes, setObservacoes] = useState('');
   const [dentistas, setDentistas] = useState<Dentista[]>([]);
-  const router = useRouter();
 
   useEffect(() => {
     const fetchDentistas = async () => {

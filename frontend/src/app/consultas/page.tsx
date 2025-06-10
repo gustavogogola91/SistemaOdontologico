@@ -2,10 +2,24 @@
 import Button from "@/components/ui/Button";
 import { handlePostConsulta } from "./actions";
 import { useRouter } from 'next/navigation';
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../contexts/AuthContext";
+import { parseCookies } from "nookies";
 
 const consultas = () => {
+
+    const { logoutUsuario } = useContext(AuthContext);
+    const { 'auth-token': AuthToken } = parseCookies();
+
     const router = useRouter();
+
+    useEffect(() => {
+        if (!AuthToken) {
+            logoutUsuario()
+            router.push('/login')
+        }
+    }, []);
+
     const [consulta, setConsulta] = useState({
         Paciente: "",
         Dentista: "",

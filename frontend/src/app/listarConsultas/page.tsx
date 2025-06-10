@@ -1,8 +1,11 @@
 "use client";
 
-import { useEffect, useState, ChangeEvent } from "react";
+import { useEffect, useState, ChangeEvent, useContext } from "react";
 import { useRouter } from "next/navigation";
 import { handleGetConsultas } from "./actions";
+import { AuthContext } from "../contexts/AuthContext";
+import { parseCookies } from "nookies";
+import { Router } from "next/router";
 
 interface Consulta {
   id: number;
@@ -15,7 +18,6 @@ interface Consulta {
 }
 
 const ListarConsultas = () => {
-  const router = useRouter();
   const [consultas, setConsultas] = useState<Consulta[]>([]);
   const [filters, setFilters] = useState({
     dentista: "",
@@ -23,6 +25,18 @@ const ListarConsultas = () => {
     procedimento: "",
     dataHora: ""
   });
+
+  const { logoutUsuario } = useContext(AuthContext);
+  const { 'auth-token': AuthToken } = parseCookies();
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!AuthToken) {
+      logoutUsuario()
+      router.push('/login')
+    }
+  }, []);
 
   useEffect(() => {
     const fetchConsultas = async () => {

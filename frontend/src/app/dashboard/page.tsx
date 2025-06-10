@@ -1,17 +1,18 @@
 "use client"
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import ConsultasDentista from "./components/ConsultasDentista";
 import { parseCookies } from 'nookies'
+import { AuthContext } from "../contexts/AuthContext";
 
 export default function Dashboard() {
     const [username, setUsername] = useState<string | null>(null);
-
+    
     useEffect(() => {
         try {
             const cookies = parseCookies();
             const userNameFromCookies = cookies.userName || null;
-
+            
             if (userNameFromCookies) {
                 setUsername(userNameFromCookies);
                 console.log('Username encontrado:', userNameFromCookies);
@@ -22,6 +23,15 @@ export default function Dashboard() {
             console.error('Erro ao ler cookies:', error);
             setUsername(null);
         }
+    }, []);
+    
+    const { logoutUsuario } = useContext(AuthContext)
+    const { 'auth-token': AuthToken } = parseCookies();
+
+    useEffect(() => {
+            if (!AuthToken) {
+                logoutUsuario()
+            }
     }, []);
 
     return (
