@@ -1,12 +1,12 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 var apiUrl = "http://localhost:5143/paciente";
 
 export interface Paciente{
-    Id: number
+    id: number
     nome: string,
     Convenio: string,
     Telefone: string,
@@ -64,7 +64,7 @@ function ListaPacientes() {
                 ) : (
                 pacientes.map((paciente: Paciente) => (
                     <tr 
-                        key={paciente.Id}
+                        key={paciente.id}
                         className="flex w-[80vw] justify-evenly items-center divide-dashed border-2 border-blue p-1 rounded-[8px] my-2 text-center"
                     >
                         <td className="w-[20vw] mx-1.5 border-r border-solid">{paciente.nome}</td>
@@ -72,7 +72,7 @@ function ListaPacientes() {
                         <td className="w-[20vw] border-r border-solid">{paciente.Telefone || "(41) 9918-1828"}</td>
                         <td className="w-[20vw] flex flex-row justify-evenly">
                             <EditarPacientes pacienteOriginal={paciente}/>
-                            <DeletarPacientes id={paciente.Id}/>
+                            <DeletarPacientes id={paciente.id}/>
                         </td>
                     </tr>
                 ))
@@ -93,21 +93,22 @@ function AdicionarPacientes() {
     const [novoPaciente, setNovoPaciente] = useState({
         nome: "",
         convenio: "",
+        dataNascimento: "",
         cpf: "",
         email: "",
         telefone: "",
         endereco: ""
     });
 
-    const postPacientes = (novoPaciente: { nome: string, convenio: string, cpf: string, email: string, telefone: string, endereco: string }) => {
+    const postPacientes = async () => {
         try {
-            fetch(`${apiUrl}`, {
+            await fetch(`${apiUrl}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({...novoPaciente, dataNascimento: new Date()}),
+                body: JSON.stringify(novoPaciente),
             }).then(() => {
                 setShowModal(false);
-                setNovoPaciente({ nome: "", convenio: "", cpf: "", email: "", telefone: "", endereco: "" });
+                setNovoPaciente({ nome: "", convenio: "", dataNascimento: "", cpf: "", email: "", telefone: "", endereco: "" });
             
             }).finally(() => {
                 window.location.reload();
@@ -126,7 +127,7 @@ function AdicionarPacientes() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        postPacientes(novoPaciente);
+        postPacientes();
     };
 
     return(
@@ -150,6 +151,11 @@ function AdicionarPacientes() {
                             className="border border-blue rounded p-2" required maxLength={14}
                             value={novoPaciente.cpf} onChange={handleChange} 
                         />
+                        <input type="date" name="dataNascimento" placeholder="Data de nascimento" 
+                            className="border border-blue rounded p-2" required 
+                            value={novoPaciente.dataNascimento} onChange={handleChange}
+                            />
+
                         <input name="email" placeholder="Email" type="email"
                             className="border border-blue rounded p-2" required maxLength={50}
                             value={novoPaciente.email} onChange={handleChange} 
@@ -282,18 +288,14 @@ function EditarPacientes({ pacienteOriginal }: {pacienteOriginal:any}) {
 
 function DeletarPacientes({ id }: {id:number}) {
     const idPaciente = id;
-    const [pacientes, setPacientes] = useState([]);
-    const deletarPaciente = (id: number) => {
-        fetch(`${apiUrl}/${id}`, {
+    const deletarPaciente = async (id: number) => {
+        console.log("Deletando")
+        await fetch(`${apiUrl}/${id}`, {
             method: 'DELETE',
-        })
-        .then(() => {
-            setPacientes(pacientes.filter((p: any) => p.id !== id));
-        })
-        .finally(() => {
-            window.location.reload();
-        })
-        .catch((error) => console.error('Erro ao deletar paciente:', error));
+        }).catch((error) => console.error(error))
+
+        window.location.reload();
+
     };
     
     return (

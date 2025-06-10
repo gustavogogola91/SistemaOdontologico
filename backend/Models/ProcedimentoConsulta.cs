@@ -5,16 +5,16 @@ namespace backend.Models
 {
     public class ProcedimentoConsulta
     {
-        public ProcedimentoConsulta(int procedimentoId)
+        public ProcedimentoConsulta(long procedimentoId)
         {
             ProcedimentoId = procedimentoId;
         }
         
         [Key]
-        public int Id { get; set; }
-        public int ConsultaId { get; set; }
+        public long Id { get; set; }
+        public long ConsultaId { get; set; }
         public Consulta? Consulta { get; set; }
-        public int ProcedimentoId { get; set; }
+        public long ProcedimentoId { get; set; }
         public Procedimento? Procedimento { get; set; }
     }
 }

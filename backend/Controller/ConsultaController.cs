@@ -43,6 +43,7 @@ namespace Backend.Controller
             }
 
             var consulta = _mapper.Map<Consulta>(consultaPost);
+            consulta.DataHora = consulta.DataHora.ToUniversalTime();
 
             if (consultaPost.ListaProcedimentos != null)
             {
@@ -63,7 +64,7 @@ namespace Backend.Controller
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ConsultaDTO>> GetConsultas(int id)
+        public async Task<ActionResult<ConsultaDTO>> GetConsultas(long id)
         {
             var consulta = await _database.tb_consulta.Include(c => c.Paciente).Include(c => c.Dentista).Include(c => c.Procedimentos).ThenInclude(p => p.Procedimento).FirstOrDefaultAsync(c => c.Id == id);
 
@@ -78,7 +79,7 @@ namespace Backend.Controller
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateConsulta(int id, [FromBody] ConsultaPutDTO consulta)
+        public async Task<IActionResult> UpdateConsulta(long id, [FromBody] ConsultaPutDTO consulta)
         {
             var consultaExistente = await _database.tb_consulta.FindAsync(id);
 
@@ -89,6 +90,7 @@ namespace Backend.Controller
 
             consultaExistente.DentistaId = consulta.DentistaId;
             consultaExistente.Observacoes = consulta.Observacoes;
+            consultaExistente.DataHora = consulta.DataHora;
             consultaExistente.Convenio = consulta.Convenio;
 
             await _database.SaveChangesAsync();
@@ -96,7 +98,7 @@ namespace Backend.Controller
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteConsulta(int id)
+        public async Task<IActionResult> DeleteConsulta(long id)
         {
             var consulta = await _database.tb_consulta.FindAsync(id);
 
