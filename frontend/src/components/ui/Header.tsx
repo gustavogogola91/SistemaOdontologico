@@ -10,7 +10,7 @@ export default function Header() {
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
-  const { logoutUsuario } = useContext(AuthContext);
+  const { logoutUsuario, IsAuthenticated } = useContext(AuthContext);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
@@ -70,7 +70,10 @@ export default function Header() {
   }
 
   return (
-    <header className="bg-blue-900 p-4 flex items-center justify-between text-white sticky top-0 z-[100] shadow-md">
+    <header className={
+      IsAuthenticated
+      ? ("bg-blue-900 p-4 flex items-center justify-between text-white sticky top-0 z-[100] shadow-md ${}")
+      : ("hidden")}>
       <Link href="/dashboard" className="text-xl font-bold flex items-center">
         <div className="bg-white rounded-full w-8 h-8 flex items-center justify-center mr-3">
           <span className="text-blue-900 font-bold">SO</span>
