@@ -1,4 +1,4 @@
-const ApiUrlConsultas = "http://localhost:5143/consulta";
+const ApiUrlConsultas = "https://sistemaodontologico.onrender.com/consulta";
 
 
 //APIs Consultas

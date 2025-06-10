@@ -5,7 +5,7 @@ import { destroyCookie, parseCookies, setCookie } from "nookies";
 import { jwtDecode } from "jwt-decode";
 
 
-const apiUrl = "http://localhost:5143"
+const apiUrl = "https://sistemaodontologico.onrender.com"
 
 
 
