@@ -1,3 +1,5 @@
+using AutoMapper;
+using backend.DTO;
 using backend.Models;
 using backend.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -13,31 +15,38 @@ namespace backend.Controller
 
         private readonly AppDbContext _database;
         private readonly IEncryptService _hasher;
+        private readonly IMapper _mapper;
 
-        public FucionarioController(AppDbContext database, IEncryptService hasher)
+        public FucionarioController(AppDbContext database, IEncryptService hasher, IMapper mapper)
         {
             _database = database;
             _hasher = hasher;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Funcionario>>> GetFuncionarios()
+        public async Task<ActionResult<IEnumerable<FuncionarioDTO>>> GetFuncionarios()
         {
             var funcionarios = await _database.tb_funcionario.ToListAsync();
             if (funcionarios == null || !funcionarios.Any())
             {
                 return NotFound("Nenhum funcionario cadastrado!");
             }
-            return Ok(funcionarios);
+
+            var funcionariosDTO = _mapper.Map<List<FuncionarioDTO>>(funcionarios);
+
+            return Ok(funcionariosDTO);
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddFuncionario([FromBody] Funcionario funcionario)
+        public async Task<ActionResult> AddFuncionario([FromBody] FuncionarioPostDTO funcionarioPost)
         {
-            if (funcionario == null)
+            if (!ModelState.IsValid)
             {
                 return BadRequest("Dados do funcionario inválidos!");
             }
+
+            var funcionario = _mapper.Map<Funcionario>(funcionarioPost);
 
             funcionario.Senha = _hasher.HashUserPassword(funcionario.Senha!);
 
@@ -47,7 +56,7 @@ namespace backend.Controller
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Funcionario>> GetFuncionario(long id)
+        public async Task<ActionResult<FuncionarioDTO>> GetFuncionario(long id)
         {
             var funcionario = await _database.tb_funcionario.FindAsync(id);
 
@@ -56,7 +65,9 @@ namespace backend.Controller
                 return NotFound("Funcionario não encontrado!");
             }
 
-            return Ok(funcionario);
+            var funcionarioDTO = _mapper.Map<FuncionarioDTO>(funcionario);
+
+            return Ok(funcionarioDTO);
         }
 
         [HttpPut("{id}")]

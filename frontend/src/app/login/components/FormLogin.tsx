@@ -62,17 +62,9 @@ export const FormLogin = () => {
                 router.push('/consultas');
             }
 
-            // router.push('/Pages/AulasPage');
         } else {
             alert("Email ou senha inválidos!");
         }
-
-        // var usuario = await loginUsuario(loginData.email, loginData.senha);
-        // if (usuario !== null) {
-        //     alert("Parabens, você lembrou seu login (aqui n temos opção de recuperação, Guarde bem)!");
-        //     // TODO: Redirecionar para a página inicial ou outra página desejada
-        //     return;
-        // }
 
     };
     return(

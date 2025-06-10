@@ -1,24 +1,52 @@
 import api from "@/lib/api"
 
-// export const handleGetConsultas = () => {
-
-//     //TODO implementar após backend pronto
-
-// }
-
-
 export async function handlePostConsulta(consulta: any) {
 
-    //TODO implementar após backend pronto
     console.log(consulta)
     try {
         const response = await api.post("/consulta", consulta, {
             headers: {
               "Content-Type": "application/json",
             }})
-        return response.data;
+        return response.status;
     } catch (error: any) {
         console.error("Erro ao fazer POST:", error.response?.data || error.message);
+        throw error;
+      }
+
+}
+
+export async function handleGetPacientes(){
+
+    try {
+        const response = await api.get("/paciente");
+        return response.data
+    } catch (error: any) {
+        console.error("Erro ao fazer GET:", error.response?.data || error.message);
+        throw error;
+      }
+
+}
+
+export async function handleGetProcedimentos(){
+
+    try {
+        const response = await api.get("/procedimento/nome");
+        return response.data
+    } catch (error: any) {
+        console.error("Erro ao fazer GET:", error.response?.data || error.message);
+        throw error;
+      }
+
+}
+
+export async function handleGetDentistas(){
+
+    try {
+        const response = await api.get("/dentista/nome");
+        return response.data
+    } catch (error: any) {
+        console.error("Erro ao fazer GET:", error.response?.data || error.message);
         throw error;
       }
 

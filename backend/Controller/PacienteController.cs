@@ -49,7 +49,7 @@ namespace SistemaOdontologico.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<PacienteDTO>> GetPaciente(int id)
+        public async Task<ActionResult<PacienteDTO>> GetPaciente(long id)
         {
             var paciente = await _database.tb_paciente.FindAsync(id);
 
@@ -64,7 +64,7 @@ namespace SistemaOdontologico.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePaciente(int id, [FromBody] PacientePutDTO paciente)
+        public async Task<IActionResult> UpdatePaciente(long id, [FromBody] PacientePutDTO paciente)
         {
             var pacienteExistente = await _database.tb_paciente.FindAsync(id);
 
@@ -85,7 +85,7 @@ namespace SistemaOdontologico.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePaciente(int id)
+        public async Task<IActionResult> DeletePaciente(long id)
         {
             var paciente = await _database.tb_paciente.FindAsync(id);
 
