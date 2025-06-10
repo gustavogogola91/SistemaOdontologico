@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useState, useRef, useMemo } from "react";
+import { AuthContext } from "../contexts/AuthContext";
+import { parseCookies } from "nookies";
+import { useEffect, useState, useRef, useMemo, ChangeEvent, useContext  } from "react";
 import { useRouter } from "next/navigation";
 import {
   handleGetConsultas,
@@ -28,6 +30,7 @@ interface Procedimento {
   id: number;
   nome: string;
 }
+
 
 interface Consulta {
   id: number;
@@ -252,7 +255,6 @@ const Modal = ({ onClose, consulta }: ModalProps) => {
 };
 
 const ListarConsultas = () => {
-  const router = useRouter();
   const [consultas, setConsultas] = useState<Consulta[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [consultaSelecionada, setConsultaSelecionada] = useState<Consulta>();
@@ -262,6 +264,18 @@ const ListarConsultas = () => {
     data: "",
     futuro: true,
   });
+
+  const { logoutUsuario } = useContext(AuthContext);
+  const { 'auth-token': AuthToken } = parseCookies();
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!AuthToken) {
+      logoutUsuario()
+      router.push('/login')
+    }
+  }, []);
 
   useEffect(() => {
     const fetchConsultas = async () => {

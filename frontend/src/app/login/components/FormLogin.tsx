@@ -69,10 +69,12 @@ export const FormLogin = () => {
     };
     return(
          <>
-            <form className="base-form flex flex-col w-full max-w-xs gap-4" onSubmit={handleSubmit}>
-                <input name="username" type="text" placeholder="Username" className="" value={loginData.username} onChange={handleChange} required />
-                <input name="senha" type="password" placeholder="Senha" className="" value={loginData.senha} onChange={handleChange} required />
-                <button type="submit" className="btn-primary py-2 text-[16px] font-bold"> Entrar </button>
+            <form className="base-form flex justify-center items-center flex-col w-full max-w-xs gap-1 p-5" onSubmit={handleSubmit}>
+                <label htmlFor="username" className="text-left ">Usuário</label>
+                <input name="username" type="text" className="bg-white border-1 border-blue rounded w-[350px] mb-15 p-1" value={loginData.username} onChange={handleChange} required />
+                <label htmlFor="senha" className="text-left ">Senha</label>
+                <input name="senha" type="password"  className="bg-white border-1 border-blue rounded w-[350px] mb-15 p-1" value={loginData.senha} onChange={handleChange} required />
+                <button type="submit" className="btn-primary cursor-pointer py-2 w-1/2 text-[16px] rounded text-white bg-blue font-bold"> ENTRAR </button>
             </form>
         </>
     )

@@ -1,8 +1,10 @@
 'use client'
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Header from '@/components/ui/Header';
 import { criarProcedimento, buscarDentistas } from './actions';
 import { useRouter } from 'next/navigation';
+import { AuthContext } from '../contexts/AuthContext';
+import { parseCookies } from 'nookies';
 
 interface Dentista {
   id: number;
@@ -10,38 +12,51 @@ interface Dentista {
 }
 
 export default function CriarProcedimento() {
+  const { logoutUsuario } = useContext(AuthContext);
+  const { 'auth-token': AuthToken } = parseCookies();
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!AuthToken) {
+      logoutUsuario()
+      router.push('/login')
+    }
+  }, []);
+
+
   const [procedimento, setProcedimento] = useState('');
   const [responsavel, setResponsavel] = useState('');
   const [pagamento, setPagamento] = useState(''); 
   const [observacoes, setObservacoes] = useState('');
   const [dentistas, setDentistas] = useState<Dentista[]>([]);
-  const router = useRouter();
 
   useEffect(() => {
-    
     const fetchDentistas = async () => {
       const data = await buscarDentistas();
       setDentistas(data);
     }
     fetchDentistas();
-  },[])
+  }, []);
 
-  // Função para formatar string para moeda BRL
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, []);
+
   const formatBRL = (value: string) => {
-
     const cleanValue = value.replace(/\D/g, '');
     const numberValue = parseInt(cleanValue || '0', 10);
-
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL',
     }).format(numberValue / 100);
   };
 
-
   const handlePagamentoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value;
-
     setPagamento(formatBRL(input));
   };
 
@@ -62,7 +77,6 @@ export default function CriarProcedimento() {
       setResponsavel('');
       
       alert('Procedimento criado com sucesso!');
-
     } catch (error) {
       alert('Erro ao criar procedimento');
     }
@@ -74,8 +88,6 @@ export default function CriarProcedimento() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Header />
-
       <div className="max-w-5xl mx-auto mt-10 px-4">
         <h1 className="text-center text-xl font-bold text-blue-900 mb-6">CRIAR PROCEDIMENTO</h1>
 

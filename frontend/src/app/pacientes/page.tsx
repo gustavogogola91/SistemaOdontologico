@@ -1,7 +1,10 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
+import { AuthContext } from "../contexts/AuthContext";
+import { parseCookies } from "nookies";
+import React, { useEffect, useRef, useState, useContext } from "react";
+
 
 var apiUrl = "https://sistemaodontologico.onrender.com/paciente";
 
@@ -13,6 +16,20 @@ export interface Paciente{
 }
 
 export default function Pacientes() {
+    const { logoutUsuario } = useContext(AuthContext);
+    const { 'auth-token': AuthToken } = parseCookies();
+
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!AuthToken) {
+            logoutUsuario()
+            router.push('/login')
+        }
+    }, []);
+
+
+
     return(
         <>
         <div className="flex flex-col items-center">

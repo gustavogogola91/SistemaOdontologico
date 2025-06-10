@@ -1,5 +1,7 @@
 "use client";
 import Button from "@/components/ui/Button";
+import { AuthContext } from "../contexts/AuthContext";
+import { parseCookies } from "nookies";
 import {
   handleGetDentistas,
   handleGetPacientes,
@@ -7,7 +9,7 @@ import {
   handlePostConsulta,
 } from "./actions";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useContext } from "react";
 
 interface Paciente {
   id: number;
@@ -225,7 +227,18 @@ const consultas = () => {
   const [pacientes, setPacientes] = useState<Paciente[]>([]);
   const [pacienteSelecionado, setPacienteSelecionado] = useState<Paciente>();
   const [filtroPaciente, setFiltroPaciente] = useState("");
+  
+  const { logoutUsuario } = useContext(AuthContext);
+  const { 'auth-token': AuthToken } = parseCookies();
 
+    useEffect(() => {
+      if (!AuthToken) {
+          logoutUsuario()
+          router.push('/login')
+        }
+    }, []);
+                    
+                    
   useEffect(() => {
     getPacientes();
   }, []);

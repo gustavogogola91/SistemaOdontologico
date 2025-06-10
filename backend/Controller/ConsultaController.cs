@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using backend.DTO;
 using AutoMapper;
 using backend.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Backend.Controller
 {
@@ -32,6 +33,35 @@ namespace Backend.Controller
 
             var consultasDTO = _mapper.Map<List<ConsultaDTO>>(consultas);
             return Ok(consultasDTO);
+        }
+
+        [Authorize]
+        [HttpGet("dentista/{nome}")]
+        public async Task<ActionResult<IEnumerable<ConsultaDTO>>> getConsultaByDentista(string nome)
+        {
+            System.Console.WriteLine(nome);
+
+            var dentista = await _database.tb_dentista.FirstOrDefaultAsync(d => d.Username == nome);
+
+            if (dentista == null)
+            {
+                // return NotFound("Dentista não encontrado!"); 
+                return StatusCode(402);               
+            }
+
+            var consultas = await _database.tb_consulta.Include(c => c.Paciente).Include(c => c.Dentista).Include(c => c.Procedimentos).ThenInclude(p => p.Procedimento)
+            .Where(c => c.Dentista.Username == nome)
+            .ToListAsync();
+
+            if (consultas == null || !consultas.Any())
+            {
+                // return NotFound("Nenhuma consulta foi encontrada!");
+                return StatusCode(403);
+            }
+
+            var consultasDTO = _mapper.Map<List<ConsultaDTO>>(consultas);
+            return Ok(consultasDTO);
+
         }
 
         [HttpPost]
