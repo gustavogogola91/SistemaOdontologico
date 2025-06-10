@@ -1,8 +1,6 @@
 import { parseCookies } from "nookies";
 const ApiUrlConsultas = "https://sistemaodontologico.onrender.com/consulta";
 
-
-const ApiUrlConsultas = "http://localhost:5143/consulta";
 const {'auth-token': AuthToken} = parseCookies();
 
 //APIs Consultas
