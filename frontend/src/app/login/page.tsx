@@ -6,7 +6,7 @@ import { ArrowLeft } from "lucide-react";
 const login = () => {
     return(
         <>
-            <Link href={"consultas"} className="block left-0 m-10">
+            <Link href="/" className="block left-0 m-10">
                 <ArrowLeft color="#1D1B20" />
             </Link>
             <div className="flex justify-center items-center ">

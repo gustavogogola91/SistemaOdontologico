@@ -13,7 +13,7 @@ export default function Header() {
   const menuRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const { logoutUsuario, IsAuthenticated } = useContext(AuthContext);
-  const {'userType': userType} = parseCookies()
+  const {'userType': userType, 'userName' : userName} = parseCookies()
   const router = useRouter()
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
@@ -78,9 +78,9 @@ export default function Header() {
       IsAuthenticated
       ? ("bg-blue-900 p-4 flex items-center justify-between text-white sticky top-0 z-[100] shadow-md ${}")
       : ("hidden")}>
-      <Link href="/dashboard" className="text-xl font-bold flex items-center">
-        <div className="bg-white rounded-full w-8 h-8 flex items-center justify-center mr-3">
-          <span className="text-blue-900 font-bold">SO</span>
+      <Link href="/" className="text-xl font-bold flex items-center">
+        <div className="flex items-center justify-center mr-3">
+          <img src="/icon.svg" alt="icone" />
         </div>
         Sistema Odontológico
       </Link>
@@ -104,8 +104,8 @@ export default function Header() {
           className="absolute top-full right-4 mt-2 w-64 bg-white text-blue-900 rounded-lg shadow-xl z-50 overflow-hidden"
         >
           <div className="p-4 border-b border-gray-200">
-            <p className="font-bold">Usuário</p>
-            <p className="text-sm text-gray-600">Clínica</p>
+            <p className="font-bold">{userName}</p>
+            <p className="text-sm text-gray-600">{userType}</p>
           </div>
           
           <div className="py-2">
