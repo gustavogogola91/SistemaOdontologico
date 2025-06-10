@@ -58,7 +58,6 @@ const Modal = ({ onClose, paciente }: ModalProps) => {
   const dataHoraRef = useRef<HTMLInputElement>(null);
   const procedimentoRef = useRef<HTMLSelectElement>(null);
   const observacaoRef = useRef<HTMLTextAreaElement>(null);
-  const messageRef = useRef<HTMLElement>(null);
 
   const postConsulta = async () => {
     console.log(dataHoraRef.current?.value);
@@ -113,104 +112,109 @@ const Modal = ({ onClose, paciente }: ModalProps) => {
   }, []);
 
   return (
-    <div className="absolute w-[50%] h-[80%] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform rounded-[10px] z-10 bg-white border-[5px] border-[#043873] flex-col items-center gap-6 transition duration-300 text-center">
-      <h1 className="uppercase text-[24px] font-bold text-[#043873] mt-[20px]">
-        Agendamento
-      </h1>
-      <form
-        className="flex flex-col items-center gap-[16px] text-center"
-        onSubmit={(e) => {
-          e.preventDefault();
-          postConsulta();
-        }}
-      >
-        <label htmlFor="nome">Paciente</label>
-        <input
-          type="text"
-          name="Paciente"
-          id="paciente"
-          defaultValue={paciente?.nome}
-          disabled
-          className="border-[1px] border-[#043873] rounded-[10px] p-[3px] w-[350px]"
-          required
-        />
-        <label htmlFor="responsavel">Dentista</label>
-        <select
-          name="Dentista"
-          id="Dentista"
-          ref={dentistaRef}
-          className="border-[1px] border-[#043873] rounded-[10px] p-[3px] w-[350px]"
-          required
+    <div
+      className="fixed inset-0 flex items-center justify-center z-50"
+      style={{ background: "rgba(0,0,0,0.3)" }}
+    >
+      <div className="absolute w-[50%] h-[80%] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform rounded-[10px] z-10 bg-white border-[5px] border-[#043873] flex-col items-center gap-6 transition duration-300 text-center">
+        <h1 className="uppercase text-[24px] font-bold text-[#043873] mt-[20px]">
+          Agendamento
+        </h1>
+        <form
+          className="flex flex-col items-center gap-[16px] text-center"
+          onSubmit={(e) => {
+            e.preventDefault();
+            postConsulta();
+          }}
         >
-          <option value="0">Selecione um dentista</option>
-          {dentistas.map((dentista) => (
-            <option value={dentista.id} key={dentista.id}>
-              {dentista.nome}
-            </option>
-          ))}
-        </select>
-        <label htmlFor="data">Data e horário</label>
-        <input
-          type="datetime-local"
-          name="DataHora"
-          id="data"
-          ref={dataHoraRef}
-          className="border-[1px] border-[#043873] rounded-[10px] p-[3px] w-[350px]"
-          required
-        />
-        <label htmlFor="procedimento">Procedimento</label>
-        <select
-          name="Procedimento"
-          id="procedimento"
-          ref={procedimentoRef}
-          className="border-[1px] border-[#043873] rounded-[10px] p-[3px] w-[350px]"
-          required
+          <label htmlFor="nome">Paciente</label>
+          <input
+            type="text"
+            name="Paciente"
+            id="paciente"
+            defaultValue={paciente?.nome}
+            disabled
+            className="border-[1px] border-[#043873] rounded-[10px] p-[3px] w-[350px]"
+            required
+          />
+          <label htmlFor="responsavel">Dentista</label>
+          <select
+            name="Dentista"
+            id="Dentista"
+            ref={dentistaRef}
+            className="border-[1px] border-[#043873] rounded-[10px] p-[3px] w-[350px]"
+            required
+          >
+            <option value="0">Selecione um dentista</option>
+            {dentistas.map((dentista) => (
+              <option value={dentista.id} key={dentista.id}>
+                {dentista.nome}
+              </option>
+            ))}
+          </select>
+          <label htmlFor="data">Data e horário</label>
+          <input
+            type="datetime-local"
+            name="DataHora"
+            id="data"
+            ref={dataHoraRef}
+            className="border-[1px] border-[#043873] rounded-[10px] p-[3px] w-[350px]"
+            required
+          />
+          <label htmlFor="procedimento">Procedimento</label>
+          <select
+            name="Procedimento"
+            id="procedimento"
+            ref={procedimentoRef}
+            className="border-[1px] border-[#043873] rounded-[10px] p-[3px] w-[350px]"
+            required
+          >
+            <option value="0">Selecione um Procedimento</option>
+            {procedimentos.map((procedimento) => (
+              <option value={procedimento.id} key={procedimento.id}>
+                {procedimento.nome}
+              </option>
+            ))}
+          </select>
+          <label htmlFor="observacao">Observações</label>
+          <textarea
+            name="Observacoes"
+            id="observacoes"
+            ref={observacaoRef}
+            className="border-[1px] border-[#043873] rounded-[10px] p-[3px] w-[350px]"
+            required
+          />
+          <div className="flex flex-row gap-9 items-center">
+            <button
+              type="reset"
+              className="font-bold text-white bg-[#C00F0C]  p-[5px] rounded-[5px] uppercase mt-[10px] cursor-pointer"
+              onClick={() => {
+                onClose();
+              }}
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              className="font-bold text-white bg-[#009951]  p-[5px] rounded-[5px] uppercase mt-[10px] cursor-pointer"
+            >
+              Agendar
+            </button>
+          </div>
+        </form>
+        <p
+          id="mesage"
+          className="font-bold uppercase text-green-800 bg-green-500 mt-4 w-[60%] m-auto"
         >
-          <option value="0">Selecione um Procedimento</option>
-          {procedimentos.map((procedimento) => (
-            <option value={procedimento.id} key={procedimento.id}>
-              {procedimento.nome}
-            </option>
-          ))}
-        </select>
-        <label htmlFor="observacao">Observações</label>
-        <textarea
-          name="Observacoes"
-          id="observacoes"
-          ref={observacaoRef}
-          className="border-[1px] border-[#043873] rounded-[10px] p-[3px] w-[350px]"
-          required
-        />
-        <div className="flex flex-row gap-9 items-center">
-          <button
-            type="reset"
-            className="font-bold text-white bg-[#C00F0C]  p-[5px] rounded-[5px] uppercase mt-[10px] cursor-pointer"
-            onClick={() => {
-              onClose();
-            }}
-          >
-            Cancelar
-          </button>
-          <button
-            type="submit"
-            className="font-bold text-white bg-[#009951]  p-[5px] rounded-[5px] uppercase mt-[10px] cursor-pointer"
-          >
-            Agendar
-          </button>
-        </div>
-      </form>
-      <p
-        id="mesage"
-        className="font-bold uppercase text-green-800 bg-green-500 mt-4 w-[60%] m-auto"
-      >
-        {sucessMessage}
-      </p>
-      <p
-        id="mesage"
-        className="font-bold uppercase text-red-800 bg-red-500 mt-4 w-[60%] m-auto"
-      >
-        {errorMessage}
-      </p>
+          {sucessMessage}
+        </p>
+        <p
+          id="mesage"
+          className="font-bold uppercase text-red-800 bg-red-500 mt-4 w-[60%] m-auto"
+        >
+          {errorMessage}
+        </p>
+      </div>
     </div>
   );
 };
