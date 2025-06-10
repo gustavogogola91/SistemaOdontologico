@@ -2,7 +2,14 @@
 
 import { AuthContext } from "../contexts/AuthContext";
 import { parseCookies } from "nookies";
-import { useEffect, useState, useRef, useMemo, ChangeEvent, useContext  } from "react";
+import {
+  useEffect,
+  useState,
+  useRef,
+  useMemo,
+  ChangeEvent,
+  useContext,
+} from "react";
 import { useRouter } from "next/navigation";
 import {
   handleGetConsultas,
@@ -30,7 +37,6 @@ interface Procedimento {
   id: number;
   nome: string;
 }
-
 
 interface Consulta {
   id: number;
@@ -266,14 +272,14 @@ const ListarConsultas = () => {
   });
 
   const { logoutUsuario } = useContext(AuthContext);
-  const { 'auth-token': AuthToken } = parseCookies();
+  const { "auth-token": AuthToken } = parseCookies();
 
   const router = useRouter();
 
   useEffect(() => {
     if (!AuthToken) {
-      logoutUsuario()
-      router.push('/login')
+      logoutUsuario();
+      router.push("/login");
     }
   }, []);
 
@@ -340,6 +346,13 @@ const ListarConsultas = () => {
 
       <button
         onClick={() => router.push("/consultas")}
+        className="bg-green-500 text-white font-semibold px-4 py-2 rounded hover:bg-green-600 absolute top-24 right-20"
+      >
+        NOVA CONSULTA
+      </button>
+
+      <button
+        onClick={() => router.push("/consultas")}
         className="bg-green-500 text-white font-semibold px-4 py-2 rounded hover:bg-green-600 absolute top-4 right-20"
       >
         NOVA CONSULTA
@@ -350,7 +363,7 @@ const ListarConsultas = () => {
           <p className="text-xl font-bold mb-6 text-blue-700 mt-4">Filtrar </p>
           <input
             type="text"
-            name="dentista" 
+            name="dentista"
             onChange={onFilterChange}
             value={filtro.dentista}
             className="border-[1px] border-[#043873] rounded-[5px] p-[3px] w-[350px] ml-4"

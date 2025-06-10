@@ -19,10 +19,10 @@ export const FormLogin = () => {
         if (typeof window !== 'undefined') {
 
             if (AuthToken) {
-                if (typeToken == 'dentista') {
+                if (typeToken === 'dentista') {
                     router.push('/dashboard');
                 } else if (typeToken == 'funcionario') {
-                    router.push('/consultas');
+                    router.push('/listarConsultas');
                 }
                 else {
                     logoutUsuario()
@@ -55,12 +55,9 @@ export const FormLogin = () => {
         const success = await loginUsuario(loginRequestData)
 
         if (success) {
+            console.log(typeToken)
             console.log(localStorage.getItem('AuthToken'));
-            if (typeToken == 'dentista') {
-                router.push('/dashboard');
-            } else if (typeToken == 'funcionario') {
-                router.push('/consultas');
-            }
+            router.push('/listarConsultas');
 
         } else {
             alert("Email ou senha inválidos!");
