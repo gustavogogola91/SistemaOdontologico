@@ -45,8 +45,7 @@ namespace Backend.Controller
 
             if (dentista == null)
             {
-                // return NotFound("Dentista não encontrado!"); 
-                return StatusCode(402);               
+                return NotFound("Dentista não encontrado!");            
             }
 
             var consultas = await _database.tb_consulta.Include(c => c.Paciente).Include(c => c.Dentista).Include(c => c.Procedimentos).ThenInclude(p => p.Procedimento)
@@ -55,8 +54,7 @@ namespace Backend.Controller
 
             if (consultas == null || !consultas.Any())
             {
-                // return NotFound("Nenhuma consulta foi encontrada!");
-                return StatusCode(403);
+                return NotFound("Nenhuma consulta foi encontrada!");
             }
 
             var consultasDTO = _mapper.Map<List<ConsultaDTO>>(consultas);
