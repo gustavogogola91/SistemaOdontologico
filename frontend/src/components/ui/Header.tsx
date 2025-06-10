@@ -2,8 +2,10 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
 import { FiHome, FiCalendar, FiUser, FiSettings, FiLogOut, FiMenu, FiX } from 'react-icons/fi';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { AuthContext } from '@/app/contexts/AuthContext';
+import { parseCookie } from 'next/dist/compiled/@edge-runtime/cookies';
+import { parseCookies } from 'nookies';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -11,6 +13,8 @@ export default function Header() {
   const menuRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const { logoutUsuario, IsAuthenticated } = useContext(AuthContext);
+  const {'userType': userType} = parseCookies()
+  const router = useRouter()
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
@@ -106,10 +110,15 @@ export default function Header() {
           
           <div className="py-2">
             {menuItems.map((item, index) => (
+
               <Link
                 key={index}
                 href={item.href}
-                className={`flex items-center px-6 py-3 transition-colors ${
+                className={`
+                  ${
+                    userType != 'dentista' && item.label == 'Dashboard' ? ('hidden') : ('flex')
+                  }
+                  items-center px-6 py-3 transition-colors ${
                   item.active 
                     ? 'bg-blue-50 text-blue-800 border-l-4 border-blue-800' 
                     : 'hover:bg-blue-50'
@@ -126,6 +135,7 @@ export default function Header() {
               onClick={() => {
                 logoutUsuario();
                 setIsMenuOpen(false);
+                router.push('login');
               }}
               className="w-full flex items-center px-6 py-3 text-red-600 hover:bg-red-50 transition-colors"
             >

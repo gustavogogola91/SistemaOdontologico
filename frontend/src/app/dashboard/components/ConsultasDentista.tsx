@@ -24,7 +24,6 @@ interface Procedimento {
 
 export default function ConsultasDentista(props: any) {
     const [consultas, setConsultas] = useState([])
-    const [loading, setLoading] = useState(true);
 
     async function carregarConsultas() {
         try {
@@ -35,17 +34,17 @@ export default function ConsultasDentista(props: any) {
                 dataHora: new Date(consulta.dataHora)
             }));
             setConsultas(consultasConvertidas);
-            setLoading(false);
+
         } catch (err) {
             console.log(err instanceof Error ? err.message : "Erro desconhecido");
-            setLoading(false);
+
             setConsultas([]);
         }
     }
 
     useEffect(() => {
         carregarConsultas();
-    }, [props.Id]); 
+    }, [props.nome]); 
 
     if (consultas == undefined || consultas == null) {
         return <h1>Nenhuma consulta cadastrada</h1>;

@@ -36,23 +36,27 @@ namespace Backend.Controller
         }
 
         [Authorize]
-        [HttpGet("/dentista/{nome}")]
+        [HttpGet("dentista/{nome}")]
         public async Task<ActionResult<IEnumerable<ConsultaDTO>>> getConsultaByDentista(string nome)
         {
-            var dentista = await _database.tb_dentista.FirstOrDefaultAsync(d => d.Nome == nome);
+            System.Console.WriteLine(nome);
+
+            var dentista = await _database.tb_dentista.FirstOrDefaultAsync(d => d.Username == nome);
 
             if (dentista == null)
             {
-                return NotFound("Dentista não encontrado!");                
+                // return NotFound("Dentista não encontrado!"); 
+                return StatusCode(402);               
             }
 
             var consultas = await _database.tb_consulta.Include(c => c.Paciente).Include(c => c.Dentista).Include(c => c.Procedimentos).ThenInclude(p => p.Procedimento)
-            .Where(c => c.DentistaId == dentista.Id)
+            .Where(c => c.Dentista.Username == nome)
             .ToListAsync();
 
             if (consultas == null || !consultas.Any())
             {
-                return NotFound("Nenhuma consulta foi encontrada!");
+                // return NotFound("Nenhuma consulta foi encontrada!");
+                return StatusCode(403);
             }
 
             var consultasDTO = _mapper.Map<List<ConsultaDTO>>(consultas);
