@@ -6,7 +6,7 @@ import React, { useEffect, useRef, useState } from "react";
 var apiUrl = "http://localhost:5143/paciente";
 
 export interface Paciente{
-    Id: number
+    id: number
     nome: string,
     Convenio: string,
     Telefone: string,
@@ -64,7 +64,7 @@ function ListaPacientes() {
                 ) : (
                 pacientes.map((paciente: Paciente) => (
                     <tr 
-                        key={paciente.Id}
+                        key={paciente.id}
                         className="flex w-[80vw] justify-evenly items-center divide-dashed border-2 border-blue p-1 rounded-[8px] my-2 text-center"
                     >
                         <td className="w-[20vw] mx-1.5 border-r border-solid">{paciente.nome}</td>
@@ -72,7 +72,7 @@ function ListaPacientes() {
                         <td className="w-[20vw] border-r border-solid">{paciente.Telefone || "(41) 9918-1828"}</td>
                         <td className="w-[20vw] flex flex-row justify-evenly">
                             <EditarPacientes pacienteOriginal={paciente}/>
-                            <DeletarPacientes id={paciente.Id}/>
+                            <DeletarPacientes id={paciente.id}/>
                         </td>
                     </tr>
                 ))
@@ -288,18 +288,14 @@ function EditarPacientes({ pacienteOriginal }: {pacienteOriginal:any}) {
 
 function DeletarPacientes({ id }: {id:number}) {
     const idPaciente = id;
-    const [pacientes, setPacientes] = useState([]);
-    const deletarPaciente = (id: number) => {
-        fetch(`${apiUrl}/${id}`, {
+    const deletarPaciente = async (id: number) => {
+        console.log("Deletando")
+        await fetch(`${apiUrl}/${id}`, {
             method: 'DELETE',
-        })
-        .then(() => {
-            setPacientes(pacientes.filter((p: any) => p.id !== id));
-        })
-        .finally(() => {
-            window.location.reload();
-        })
-        .catch((error) => console.error('Erro ao deletar paciente:', error));
+        }).catch((error) => console.error(error))
+
+        window.location.reload();
+
     };
     
     return (
