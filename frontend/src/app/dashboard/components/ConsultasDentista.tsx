@@ -29,7 +29,7 @@ export default function ConsultasDentista(props: any) {
     async function carregarConsultas() {
         try {
             let data: any = null;
-            data = await buscarConsultasDentista(props.Id);
+            data = await buscarConsultasDentista(props.nome);
             const consultasConvertidas = data.map((consulta: Consulta) => ({
                 ...consulta,
                 dataHora: new Date(consulta.dataHora)
