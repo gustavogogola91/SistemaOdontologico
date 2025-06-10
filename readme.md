@@ -1,16 +1,16 @@
-# Sistema odontologico
+# Sistema OdontoPlus
 
-Sistema de controle de consultas, procedimentos e pacientes para consultório odontológico
+O projeto consiste em um sistema para gerenciamento de consultas, procedimentos e pacientes, pensado e planejado para ser utilizado em clínicas odontológicas de pequeno e médio porte.
+Apresenta uma interface amigável e intuitiva, e foi projetado para para ser leve e de rápida resposta, com implantação em servidor local.
 
-# Tecnologias utilizadas
+## Tecnologias utilizadas
 
-## Front-End
-
+### Front-End
    - React
    - Next.js
    - Tailwind CSS
 
-## Backend
+### Backend
    - .NET8.0
    - Entity Framework
    - Postgresql
