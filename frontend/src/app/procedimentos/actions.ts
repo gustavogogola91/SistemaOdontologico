@@ -12,7 +12,7 @@ export async function criarProcedimento({
   dentistaId: number;
 }) {
   try {
-    const res = await fetch('http://localhost:5143/procedimento', {
+    const res = await fetch('https://sistemaodontologico.onrender.com/procedimento', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -36,7 +36,7 @@ export async function criarProcedimento({
 
 export async function buscarDentistas() {
   try {
-    const res = await fetch('http://localhost:5143/dentista', {
+    const res = await fetch('https://sistemaodontologico.onrender.com/dentista', {
       method: 'GET'
     });
 

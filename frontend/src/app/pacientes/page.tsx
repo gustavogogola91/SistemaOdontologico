@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 
-var apiUrl = "http://localhost:5143/paciente";
+var apiUrl = "https://sistemaodontologico.onrender.com/paciente";
 
 export interface Paciente{
     id: number
