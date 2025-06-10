@@ -90,6 +90,7 @@ namespace Backend.Controller
 
             consultaExistente.DentistaId = consulta.DentistaId;
             consultaExistente.Observacoes = consulta.Observacoes;
+            consultaExistente.DataHora = consulta.DataHora;
             consultaExistente.Convenio = consulta.Convenio;
 
             await _database.SaveChangesAsync();

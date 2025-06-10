@@ -331,12 +331,12 @@ const ListarConsultas = () => {
         NOVA CONSULTA
       </button>
 
-      <div className="flex flex-col">
-        <div className="flex flex-wrap gap-4 mb-6 flex-row items-center">
+      <div className="flex flex-col ml-6">
+        <div className="flex flex-wrap gap-4 mb-1 flex-row items-center">
           <p className="text-xl font-bold mb-6 text-blue-700 mt-4">Filtrar </p>
           <input
             type="text"
-            name="dentista"
+            name="dentista" 
             onChange={onFilterChange}
             value={filtro.dentista}
             className="border-[1px] border-[#043873] rounded-[5px] p-[3px] w-[350px] ml-4"
