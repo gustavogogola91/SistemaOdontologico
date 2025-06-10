@@ -39,7 +39,7 @@ export default function Dashboard() {
             <div>
                 <h1 className="font-bold text-center text-blue text-3xl mt-10">Bem vindo, {username}</h1>
                 <h1 className="font-bold text-center text-blue text-xl my-10">suas consultas:</h1>
-                <ConsultasDentista Id="IdDentista" />
+                <ConsultasDentista nome={username} />
             </div>
         </>
 

@@ -40,12 +40,12 @@ const consultas = () => {
     return (
         <div className="flex flex-col items-center">
             <h1 className="text-3xl my-28 font-bold text-blue">AGENDAR CONSULTA</h1>
-            <button
+            {/* <button
                 onClick={() => router.push('/listarConsultas')}
                 className="absolute top-4 right-4 z-10 bg-blue text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition duration-200"
                 >
                     Consultas agendadas
-                </button>
+                </button> */}
             <div>
                 <label 
                 className="block"
