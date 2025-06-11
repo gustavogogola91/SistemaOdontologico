@@ -25,7 +25,7 @@ Apresenta uma interface amigável e intuitiva, e foi projetado para para ser lev
    - João Pedro Durau (32809352)
 
 ## Video Pitch
-   Colocar link
+   - https://www.youtube.com/watch?v=KrJwZwni_jo
 
 ## Acesso ao MVP
    - https://sistema-odontologico.vercel.app/
