@@ -9,11 +9,15 @@ Apresenta uma interface amigável e intuitiva, e foi projetado para para ser lev
    - React
    - Next.js
    - Tailwind CSS
+   - Vercel para deploy
 
 ### Backend
    - .NET8.0
    - Entity Framework
    - Postgresql
+   - Render para deploy
+   - Neon Console para deploy do banco de dados
+   
 
 ## Integrantes da equipe
    - Gabriel Ribeiro Batista (34147811)
